@@ -1,0 +1,256 @@
+/* 全局手机端优化 */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    background: #ffffff;
+    min-height: 100vh;
+    overflow-x: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.qiang-container {
+    position: relative;
+    width: 300px; /* 根据图片大小调整 */
+    text-align: center;
+}
+
+/* 手机端适配 */
+@media (max-width: 768px) {
+    .qiang-container {
+        width: 280px;
+    }
+}
+
+@media (max-width: 480px) {
+    .qiang-container {
+        width: 250px;
+    }
+}
+
+#qiang-tong {
+    width: 100%;
+    height: auto;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    -webkit-tap-highlight-color: transparent; /* 移除移动端点击高亮 */
+}
+
+/* 手机端触摸优化 */
+@media (max-width: 768px) {
+    #qiang-tong {
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    #qiang-tong:active {
+        transform: scale(0.98); /* 点击时轻微缩放反馈 */
+    }
+}
+
+/* 摇晃动画 */
+@keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    25% { transform: translate(-1px, -2px) rotate(-1deg); }
+    50% { transform: translate(1px, -1px) rotate(1deg); }
+    75% { transform: translate(-1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, 1px) rotate(0deg); }
+}
+
+.shaking {
+    animation: shake 0.5s infinite; /* 摇晃0.5秒 */
+}
+
+/* 签支弹出（需要一个单独的签支图片） */
+#drawn-qiang {
+    position: absolute;
+    top: 12%; /* 从签筒顶部附近弹出 */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    width: 80px; /* 调整大小：放大 */
+    height: auto;
+}
+
+@keyframes popOut {
+    0% { opacity: 0; transform: translateY(0) rotate(0deg); }
+    50% { opacity: 1; transform: translateY(-100px) rotate(5deg); } /* 向上弹出 */
+    100% { transform: translateY(-150px) rotate(-5deg); } /* 最终位置 */
+}
+
+.popping {
+    animation: popOut 1s ease-out forwards;
+}
+
+/* 结果弹窗样式 */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 40px;
+    border-radius: 15px;
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    position: relative;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 手机端弹框适配 */
+@media (max-width: 768px) {
+    .modal-content {
+        padding: 30px 20px;
+        max-width: 90%;
+        width: 85%;
+        margin: 20px auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-content {
+        padding: 25px 15px;
+        max-width: 95%;
+        width: 90%;
+        margin: 15px auto;
+        border-radius: 10px;
+    }
+}
+
+.modal-content h2 {
+    color: #d4af37;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.modal-content h3 {
+    color: #8b4513;
+    margin-bottom: 15px;
+    font-size: 20px;
+}
+
+.modal-content p {
+    color: #333;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.modal-content button {
+    background-color: #d4af37;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.modal-content button:hover {
+    background-color: #b8941f;
+}
+
+/* 手机端字体和间距适配 */
+@media (max-width: 768px) {
+    .modal-content h2 {
+        font-size: 22px;
+        margin-bottom: 15px;
+    }
+    
+    .modal-content h3 {
+        font-size: 18px;
+        margin-bottom: 12px;
+    }
+    
+    .modal-content p {
+        font-size: 16px;
+        line-height: 1.5;
+        margin-bottom: 15px;
+    }
+    
+    .modal-content button {
+        font-size: 16px;
+        padding: 12px 24px;
+        min-height: 44px; /* 确保触摸目标足够大 */
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-content h2 {
+        font-size: 20px;
+        margin-bottom: 12px;
+    }
+    
+    .modal-content h3 {
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+    
+    .modal-content p {
+        font-size: 14px;
+        line-height: 1.4;
+        margin-bottom: 12px;
+    }
+    
+    .modal-content button {
+        font-size: 15px;
+        padding: 10px 20px;
+        min-height: 44px;
+    }
+}
+
+/* 手机端额外优化 */
+@media (max-width: 768px) {
+    .modal {
+        padding: 10px;
+    }
+    
+    /* 优化摇晃动画在手机端的表现 */
+    .shaking {
+        animation: shake 0.3s infinite; /* 手机端摇晃更快一些 */
+    }
+    
+    /* 优化签支弹出动画 */
+    #drawn-qiang {
+        width: 60px; /* 放大 */
+        top: 10%;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal {
+        padding: 5px;
+    }
+    
+    /* 小屏幕下进一步优化 */
+    #drawn-qiang {
+        width: 50px; /* 放大 */
+        top: 8%;
+    }
+    
+    /* 优化摇晃动画 */
+    .shaking {
+        animation: shake 0.25s infinite;
+    }
+}
