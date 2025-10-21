@@ -53,10 +53,16 @@ function detectMobile() {
     
     if (isMobile) {
         // 手机端显示摇一摇提示
-        shakingArea.querySelector('p').textContent = '🙏 心诚则灵，摇一摇手机抽签';
+        shakingArea.querySelector('p').textContent = '🙏 心诚则灵，点击下方按钮启用摇一摇';
         shakeHint.style.display = 'block';
-        // 请求设备运动权限
-        requestMotionPermission();
+        
+        // iOS需要用户交互后才能请求权限
+        if (isIOS()) {
+            showIOSPermissionButton();
+        } else {
+            // Android等设备直接请求权限
+            requestMotionPermission();
+        }
     } else {
         // 桌面端显示点击提示
         shakingArea.querySelector('p').textContent = '🙏 心诚则灵，点击签筒抽签';
@@ -65,30 +71,92 @@ function detectMobile() {
     }
 }
 
+// 检测是否为iOS设备
+function isIOS() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+}
+
+// 显示iOS权限请求按钮
+function showIOSPermissionButton() {
+    const permissionBtn = document.createElement('button');
+    permissionBtn.id = 'permission-btn';
+    permissionBtn.textContent = '🔓 启用摇一摇功能';
+    permissionBtn.style.cssText = `
+        background: linear-gradient(145deg, #FFD700, #FFA500);
+        color: #8B4513;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 25px;
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        margin-top: 10px;
+        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+        transition: all 0.3s ease;
+    `;
+    
+    permissionBtn.addEventListener('click', function() {
+        requestMotionPermission();
+        permissionBtn.remove();
+    });
+    
+    permissionBtn.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-2px)';
+        this.style.boxShadow = '0 6px 20px rgba(255, 215, 0, 0.5)';
+    });
+    
+    permissionBtn.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0)';
+        this.style.boxShadow = '0 4px 15px rgba(255, 215, 0, 0.4)';
+    });
+    
+    shakeHint.appendChild(permissionBtn);
+}
+
 // 请求设备运动权限
 function requestMotionPermission() {
+    // iOS 13+ 需要请求权限
     if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
         DeviceMotionEvent.requestPermission()
             .then(response => {
                 if (response === 'granted') {
                     setupShakeDetection();
+                    updateUIForShakeMode();
                 } else {
                     // 权限被拒绝，回退到点击模式
-                    shakingArea.querySelector('p').textContent = '🙏 心诚则灵，点击签筒抽签';
-                    shakeHint.style.display = 'none';
-                    qiangTong.addEventListener('click', startDrawing);
+                    fallbackToClickMode();
                 }
             })
-            .catch(console.error);
+            .catch(error => {
+                console.error('权限请求失败:', error);
+                fallbackToClickMode();
+            });
     } else {
         // 不支持权限请求，直接设置摇动检测
         setupShakeDetection();
+        updateUIForShakeMode();
     }
+}
+
+// 更新UI为摇动模式
+function updateUIForShakeMode() {
+    shakingArea.querySelector('p').textContent = '🙏 心诚则灵，摇一摇手机抽签';
+    shakeHint.querySelector('p').textContent = '📱 现在可以摇动手机抽签了';
+    shakeHint.querySelector('.shake-animation').style.display = 'block';
+}
+
+// 回退到点击模式
+function fallbackToClickMode() {
+    shakingArea.querySelector('p').textContent = '🙏 心诚则灵，点击签筒抽签';
+    shakeHint.style.display = 'none';
+    qiangTong.addEventListener('click', startDrawing);
 }
 
 // 设置摇动检测
 function setupShakeDetection() {
     let lastX = 0, lastY = 0, lastZ = 0;
+    let shakeCount = 0;
+    let shakeStartTime = 0;
     
     window.addEventListener('devicemotion', function(event) {
         const acceleration = event.accelerationIncludingGravity;
@@ -103,16 +171,33 @@ function setupShakeDetection() {
         
         const accelerationChange = deltaX + deltaY + deltaZ;
         
-        if (accelerationChange > shakeThreshold) {
+        // iOS设备需要更敏感的检测
+        const currentThreshold = isIOS() ? 12 : shakeThreshold;
+        
+        if (accelerationChange > currentThreshold) {
             const currentTime = new Date().getTime();
+            
             // 防止过于频繁的摇动
-            if (currentTime - lastShakeTime > 1000) {
-                lastShakeTime = currentTime;
-                startDrawing();
+            if (currentTime - lastShakeTime > 1500) {
+                // 检测连续摇动
+                if (shakeCount === 0) {
+                    shakeStartTime = currentTime;
+                }
+                shakeCount++;
                 
-                // 震动反馈
-                if (navigator.vibrate) {
-                    navigator.vibrate(200);
+                // 如果1秒内有3次以上摇动，触发抽签
+                if (currentTime - shakeStartTime < 1000 && shakeCount >= 3) {
+                    lastShakeTime = currentTime;
+                    shakeCount = 0;
+                    startDrawing();
+                    
+                    // 震动反馈
+                    if (navigator.vibrate) {
+                        navigator.vibrate([200, 100, 200]);
+                    }
+                } else if (currentTime - shakeStartTime >= 1000) {
+                    // 重置计数器
+                    shakeCount = 0;
                 }
             }
         }
@@ -120,11 +205,23 @@ function setupShakeDetection() {
         lastX = x;
         lastY = y;
         lastZ = z;
-    });
+    }, true); // 使用捕获阶段，提高响应速度
 }
 
 // 页面加载时检测设备
-detectMobile();
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('页面加载完成，开始检测设备...');
+    detectMobile();
+    
+    // 添加调试信息
+    console.log('设备信息:', {
+        userAgent: navigator.userAgent,
+        isMobile: isMobile,
+        isIOS: isIOS(),
+        hasDeviceMotion: typeof DeviceMotionEvent !== 'undefined',
+        hasPermissionAPI: typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function'
+    });
+});
 
 function startDrawing() {
     if (isDrawing) return;
