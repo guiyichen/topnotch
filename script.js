@@ -30,7 +30,8 @@ const qiangData = [
     { num: "德丰哥哥签", text: "上上签：春风得意马嘀驰，化作神龙上九天，最爱秦始皇" },
     { num: "青姐签", text: "上上签：温柔善良，宜多笑，练瑜伽。" },
     { num: "亮总签", text: "上上签：单币A8，迟早财富自由，无私奉献，无所畏惧。" },
-    { num: "欢姐签", text: "上上签：好运连连。" },
+    { num: "欢姐签", text: "上上签：平安喜乐，万事如意。" },
+    { num: "欢姐签", text: "上上签：福星高照，吉星临门。" },
     { num: "青姐签", text: "上上签：天降祥瑞满人间，福星高照保平安。家宅兴旺多吉庆，财源滚滚福无边。" },
     { num: "海洋哥签", text: "上上签：日出东方红似火，朝霞满天照前程。事业兴旺如日中，功名成就乐无穷。" },
     { num: "燕子公主签", text: "上上签：月圆花好正当时，良辰美景不可失。姻缘美满家和谐，夫妻恩爱到白头。" },
@@ -252,12 +253,23 @@ function startDrawing() {
     if (isDrawing) return;
     isDrawing = true;
 
+    console.log('开始抽签动画...');
+    
     // 1. 开始摇晃动画
     qiangTong.classList.add('shaking');
+    console.log('添加shaking类:', qiangTong.classList.contains('shaking'));
+    
+    // iOS设备添加额外的动画支持
+    if (isIOS()) {
+        // 强制重绘以触发动画
+        qiangTong.style.transform = 'translateZ(0)';
+        qiangTong.style.webkitTransform = 'translateZ(0)';
+    }
     
     // 2. 模拟摇晃一段时间后停止
     setTimeout(() => {
         qiangTong.classList.remove('shaking');
+        console.log('移除shaking类');
         
         // 3. 随机抽签
         const randomIndex = Math.floor(Math.random() * qiangData.length);
