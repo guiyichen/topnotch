@@ -53,9 +53,12 @@ function detectMobile() {
                window.innerWidth <= 768;
     
     if (isMobile) {
-        // 手机端显示摇一摇提示
-        shakingArea.querySelector('p').textContent = '🙏 心诚则灵，点击下方按钮启用摇一摇';
+        // 手机端显示摇一摇和点击提示
+        shakingArea.querySelector('p').textContent = '🙏 心诚则灵，摇一摇或点击签筒抽签';
         shakeHint.style.display = 'block';
+        
+        // 手机端始终添加点击事件
+        qiangTong.addEventListener('click', startDrawing);
         
         // iOS需要用户交互后才能请求权限
         if (isIOS()) {
@@ -66,7 +69,7 @@ function detectMobile() {
         }
     } else {
         // 桌面端显示点击提示
-        shakingArea.querySelector('p').textContent = '🙏 心诚则灵，点击签筒抽签';
+        shakingArea.querySelector('p').textContent = '🙏 心诚则灵';
         shakeHint.style.display = 'none';
         qiangTong.addEventListener('click', startDrawing);
     }
@@ -143,15 +146,15 @@ function requestMotionPermission() {
 
 // 更新UI为摇动模式
 function updateUIForShakeMode() {
-    shakingArea.querySelector('p').textContent = '🙏 心诚则灵，摇一摇手机抽签';
-    shakeHint.querySelector('p').textContent = '📱 现在可以摇动手机抽签了';
+    shakingArea.querySelector('p').textContent = '🙏 心诚则灵，摇一摇或点击签筒抽签';
+    shakeHint.querySelector('p').textContent = '📱 摇一摇手机或点击签筒开始抽签';
     shakeHint.querySelector('.shake-animation').style.display = 'block';
 }
 
 // 回退到点击模式（保持摇一摇提示）
 function fallbackToClickMode() {
-    shakingArea.querySelector('p').textContent = '🙏 心诚则灵，摇一摇抽签';
-    shakeHint.querySelector('p').textContent = '📱 摇一摇手机开始抽签';
+    shakingArea.querySelector('p').textContent = '🙏 心诚则灵，摇一摇或点击签筒抽签';
+    shakeHint.querySelector('p').textContent = '📱 摇一摇手机或点击签筒开始抽签';
     shakeHint.querySelector('.shake-animation').style.display = 'block';
     
     // 移除权限按钮（如果存在）
@@ -160,8 +163,7 @@ function fallbackToClickMode() {
         permissionBtn.remove();
     }
     
-    // 添加点击事件作为备选方案
-    qiangTong.addEventListener('click', startDrawing);
+    // 点击事件已经在detectMobile中添加了，不需要重复添加
     
     // 显示提示信息
     const fallbackHint = document.createElement('div');
@@ -171,7 +173,7 @@ function fallbackToClickMode() {
         margin-top: 10px;
         text-align: center;
     `;
-    fallbackHint.textContent = '💡 如果摇一摇无效，也可以点击签筒抽签';
+    fallbackHint.textContent = '💡 摇一摇功能需要授权，点击签筒也可以抽签';
     shakeHint.appendChild(fallbackHint);
 }
 
