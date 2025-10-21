@@ -1,3 +1,52 @@
+/* 摇一摇动画 */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+    20%, 40%, 60%, 80% { transform: translateX(10px); }
+}
+
+.shake-animation {
+    font-size: 2rem;
+    animation: shake 1s infinite;
+    margin-top: 10px;
+}
+
+/* 手机端摇动提示样式 */
+#shake-hint {
+    text-align: center;
+    margin-top: 15px;
+}
+
+#shake-hint p {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+/* 手机端优化 */
+@media (max-width: 768px) {
+    .qiang-container {
+        width: 280px;
+        height: 400px;
+    }
+    
+    #qiang-tong {
+        width: 200px;
+        height: 300px;
+    }
+    
+    #shaking-area p {
+        font-size: 1rem;
+        margin: 10px 0;
+    }
+    
+    .modal-content {
+        width: 90%;
+        max-width: 350px;
+        margin: 10% auto;
+    }
+}
+
 /* 全局手机端优化 */
 * {
     box-sizing: border-box;

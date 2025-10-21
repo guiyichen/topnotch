@@ -41,9 +41,92 @@ const qiangData = [
 const qiangTong = document.getElementById('qiang-tong');
 const resultModal = document.getElementById('result-modal');
 const drawnQiang = document.getElementById('drawn-qiang');
+const shakingArea = document.getElementById('shaking-area');
+const shakeHint = document.getElementById('shake-hint');
 let isDrawing = false; // 防止重复点击
+let isMobile = false; // 是否为手机设备
+let lastShakeTime = 0; // 上次摇动时间
+let shakeThreshold = 15; // 摇动阈值
 
-qiangTong.addEventListener('click', startDrawing);
+// 检测是否为手机设备
+function detectMobile() {
+    isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+               window.innerWidth <= 768;
+    
+    if (isMobile) {
+        // 手机端显示摇一摇提示
+        shakingArea.querySelector('p').textContent = '🙏 心诚则灵，摇一摇手机抽签';
+        shakeHint.style.display = 'block';
+        // 请求设备运动权限
+        requestMotionPermission();
+    } else {
+        // 桌面端显示点击提示
+        shakingArea.querySelector('p').textContent = '🙏 心诚则灵，点击签筒抽签';
+        shakeHint.style.display = 'none';
+        qiangTong.addEventListener('click', startDrawing);
+    }
+}
+
+// 请求设备运动权限
+function requestMotionPermission() {
+    if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+        DeviceMotionEvent.requestPermission()
+            .then(response => {
+                if (response === 'granted') {
+                    setupShakeDetection();
+                } else {
+                    // 权限被拒绝，回退到点击模式
+                    shakingArea.querySelector('p').textContent = '🙏 心诚则灵，点击签筒抽签';
+                    shakeHint.style.display = 'none';
+                    qiangTong.addEventListener('click', startDrawing);
+                }
+            })
+            .catch(console.error);
+    } else {
+        // 不支持权限请求，直接设置摇动检测
+        setupShakeDetection();
+    }
+}
+
+// 设置摇动检测
+function setupShakeDetection() {
+    let lastX = 0, lastY = 0, lastZ = 0;
+    
+    window.addEventListener('devicemotion', function(event) {
+        const acceleration = event.accelerationIncludingGravity;
+        const x = acceleration.x;
+        const y = acceleration.y;
+        const z = acceleration.z;
+        
+        // 计算加速度变化
+        const deltaX = Math.abs(x - lastX);
+        const deltaY = Math.abs(y - lastY);
+        const deltaZ = Math.abs(z - lastZ);
+        
+        const accelerationChange = deltaX + deltaY + deltaZ;
+        
+        if (accelerationChange > shakeThreshold) {
+            const currentTime = new Date().getTime();
+            // 防止过于频繁的摇动
+            if (currentTime - lastShakeTime > 1000) {
+                lastShakeTime = currentTime;
+                startDrawing();
+                
+                // 震动反馈
+                if (navigator.vibrate) {
+                    navigator.vibrate(200);
+                }
+            }
+        }
+        
+        lastX = x;
+        lastY = y;
+        lastZ = z;
+    });
+}
+
+// 页面加载时检测设备
+detectMobile();
 
 function startDrawing() {
     if (isDrawing) return;
