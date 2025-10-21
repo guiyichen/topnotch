@@ -123,12 +123,14 @@ function requestMotionPermission() {
                     setupShakeDetection();
                     updateUIForShakeMode();
                 } else {
-                    // 权限被拒绝，回退到点击模式
+                    // 权限被拒绝，保持摇一摇UI但添加点击备选
+                    console.log('权限被拒绝，使用备选方案');
                     fallbackToClickMode();
                 }
             })
             .catch(error => {
                 console.error('权限请求失败:', error);
+                // 权限请求失败，保持摇一摇UI但添加点击备选
                 fallbackToClickMode();
             });
     } else {
@@ -145,11 +147,31 @@ function updateUIForShakeMode() {
     shakeHint.querySelector('.shake-animation').style.display = 'block';
 }
 
-// 回退到点击模式
+// 回退到点击模式（保持摇一摇提示）
 function fallbackToClickMode() {
-    shakingArea.querySelector('p').textContent = '🙏 心诚则灵，点击签筒抽签';
-    shakeHint.style.display = 'none';
+    shakingArea.querySelector('p').textContent = '🙏 心诚则灵，摇一摇抽签';
+    shakeHint.querySelector('p').textContent = '📱 摇一摇手机开始抽签';
+    shakeHint.querySelector('.shake-animation').style.display = 'block';
+    
+    // 移除权限按钮（如果存在）
+    const permissionBtn = document.getElementById('permission-btn');
+    if (permissionBtn) {
+        permissionBtn.remove();
+    }
+    
+    // 添加点击事件作为备选方案
     qiangTong.addEventListener('click', startDrawing);
+    
+    // 显示提示信息
+    const fallbackHint = document.createElement('div');
+    fallbackHint.style.cssText = `
+        font-size: 0.8rem;
+        color: #999;
+        margin-top: 10px;
+        text-align: center;
+    `;
+    fallbackHint.textContent = '💡 如果摇一摇无效，也可以点击签筒抽签';
+    shakeHint.appendChild(fallbackHint);
 }
 
 // 设置摇动检测
