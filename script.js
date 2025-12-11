@@ -111,6 +111,7 @@ let isDrawing = false; // 防止重复点击
 let isMobile = false; // 是否为手机设备
 let lastShakeTime = 0; // 上次摇动时间
 let shakeThreshold = 15; // 摇动阈值
+let currentQiang = null; // 当前抽到的签
 
 // 检测是否为手机设备
 function detectMobile() {
@@ -356,6 +357,7 @@ function startDrawing() {
 }
 
 function showResult(result) {
+    currentQiang = result; // 保存当前签文
     document.getElementById('qiang-number').textContent = result.num;
     document.getElementById('qiang-text').textContent = result.text;
     resultModal.style.display = 'block';
@@ -363,4 +365,45 @@ function showResult(result) {
 
 function closeModal() {
     resultModal.style.display = 'none';
+}
+
+function showExplanation() {
+    if (!currentQiang) return;
+    
+    // 先关闭当前的结果弹框
+    closeModal();
+    
+    // 创建解签弹窗
+    const explanationModal = document.createElement('div');
+    explanationModal.id = 'explanation-modal';
+    explanationModal.className = 'modal';
+    explanationModal.innerHTML = `
+        <div class="modal-content">
+            <button class="close-icon-btn" onclick="closeExplanationModal()" aria-label="关闭">×</button>
+            <h2>签文解释</h2>
+            <h3>${currentQiang.num}</h3>
+            <p><strong>签文：</strong>${currentQiang.text}</p>
+            <div class="explanation-content">
+                <p><strong>解签：</strong></p>
+                <p>此签为上上签，寓意吉祥。签文提示您当前运势良好，凡事皆宜。保持诚心正念，积极向上，必能心想事成。无论事业、感情还是健康，都将朝着好的方向发展。建议您把握当下时机，勇敢追求目标，同时保持谦逊和感恩之心。</p>
+                <p><strong>建议：</strong></p>
+                <ul>
+                    <li>保持积极乐观的心态</li>
+                    <li>把握当前的良好时机</li>
+                    <li>以诚待人，以正处事</li>
+                    <li>心怀感恩，知足常乐</li>
+                </ul>
+            </div>
+            <button onclick="closeExplanationModal()">关闭</button>
+        </div>
+    `;
+    document.body.appendChild(explanationModal);
+    explanationModal.style.display = 'flex';
+}
+
+function closeExplanationModal() {
+    const explanationModal = document.getElementById('explanation-modal');
+    if (explanationModal) {
+        explanationModal.remove();
+    }
 }
