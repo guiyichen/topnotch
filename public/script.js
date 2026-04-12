@@ -1,4 +1,5 @@
-// 观音灵签签文数据 - 100签（参考：https://www.51chouqian.com/guanyinlingqian/）
+// 签文数据现在由 i18n.js 提供，通过 getSignData() 获取
+// 保留 qiangData 作为兼容引用
 const qiangData = [
     { num: "第1签", text: "上上签：天开地辟结良缘，日吉时良万事全。若得此签非小可，人行中正帝王宣。", freeExplanation: "此签开天辟地之象，万事俱全之兆。主行事端正、贵人扶持，凡事光明坦荡，婚姻事业皆宜。宜把握时机，大胆进取。" },
     { num: "第2签", text: "上上签：一锄掘地要求泉，努力求之得最先。无意俄然遇知己，相逢携手上青天。", freeExplanation: "此签掘地得泉之象，努力有成之兆。主勤奋必得回报，且将在不经意间遇到贵人知己，携手共进，前程似锦。" },
@@ -120,7 +121,7 @@ function detectMobile() {
     
     if (isMobile) {
         // 手机端显示摇一摇和点击提示
-        shakingArea.querySelector('p').textContent = '🙏 心诚则灵，摇一摇或点击签筒抽签';
+        shakingArea.querySelector('p').textContent = t('shakeOrClickHint');
         shakeHint.style.display = 'block';
         
         // 手机端始终添加点击事件
@@ -135,7 +136,7 @@ function detectMobile() {
         }
     } else {
         // 桌面端显示点击提示
-        shakingArea.querySelector('p').textContent = '🙏 心诚则灵';
+        shakingArea.querySelector('p').textContent = t('clickToDrawHint');
         shakeHint.style.display = 'none';
         qiangTong.addEventListener('click', startDrawing);
     }
@@ -150,7 +151,7 @@ function isIOS() {
 function showIOSPermissionButton() {
     const permissionBtn = document.createElement('button');
     permissionBtn.id = 'permission-btn';
-    permissionBtn.textContent = '🔓 启用摇一摇功能';
+    permissionBtn.textContent = t('enableShake');
     permissionBtn.style.cssText = `
         background: linear-gradient(145deg, #FFD700, #FFA500);
         color: #8B4513;
@@ -194,12 +195,12 @@ function requestMotionPermission() {
                     updateUIForShakeMode();
                 } else {
                     // 权限被拒绝，保持摇一摇UI但添加点击备选
-                    console.log('权限被拒绝，使用备选方案');
+                    console.log('Permission denied, using fallback');
                     fallbackToClickMode();
                 }
             })
             .catch(error => {
-                console.error('权限请求失败:', error);
+                console.error('Permission request failed:', error);
                 // 权限请求失败，保持摇一摇UI但添加点击备选
                 fallbackToClickMode();
             });
@@ -213,14 +214,14 @@ function requestMotionPermission() {
 // 更新UI为摇动模式
 function updateUIForShakeMode() {
     shakingArea.querySelector('p').textContent = '🙏 心诚则灵，摇一摇或点击签筒抽签';
-    shakeHint.querySelector('p').textContent = '📱 摇一摇手机或点击签筒开始抽签';
+    shakeHint.querySelector('p').textContent = t('shakeOrClickDetail');
     shakeHint.querySelector('.shake-animation').style.display = 'block';
 }
 
 // 回退到点击模式（保持摇一摇提示）
 function fallbackToClickMode() {
     shakingArea.querySelector('p').textContent = '🙏 心诚则灵，摇一摇或点击签筒抽签';
-    shakeHint.querySelector('p').textContent = '📱 摇一摇手机或点击签筒开始抽签';
+    shakeHint.querySelector('p').textContent = t('shakeOrClickDetail');
     shakeHint.querySelector('.shake-animation').style.display = 'block';
     
     // 移除权限按钮（如果存在）
@@ -239,7 +240,7 @@ function fallbackToClickMode() {
         margin-top: 10px;
         text-align: center;
     `;
-    fallbackHint.textContent = '💡 摇一摇功能需要授权，点击签筒也可以抽签';
+    fallbackHint.textContent = t('shakeFallbackHint');
     shakeHint.appendChild(fallbackHint);
 }
 
@@ -301,7 +302,9 @@ function setupShakeDetection() {
 
 // 页面加载时检测设备
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('页面加载完成，开始检测设备...');
+    // Initialize i18n UI
+    initUI();
+    console.log('Page loaded, detecting device...');
     detectMobile();
 
     // 添加调试信息
@@ -333,7 +336,7 @@ async function handlePaymentReturn(sessionId, type, signNum) {
         const result = await resp.json();
 
         if (!result.verified) {
-            alert('支付验证失败，请联系客服');
+            alert(t('paymentVerifyFailed'));
             return;
         }
 
@@ -352,7 +355,7 @@ async function handlePaymentReturn(sessionId, type, signNum) {
             const data = await fetchAndCacheInterpretation(result.signNum);
             if (data) {
                 // 找到对应的签文数据并展示
-                const sign = qiangData.find(q => q.num === result.signNum);
+                const sign = getSignData().find(q => q.num === result.signNum);
                 if (sign) {
                     currentQiang = sign;
                     showExplanation();
@@ -361,7 +364,7 @@ async function handlePaymentReturn(sessionId, type, signNum) {
         }
     } catch (err) {
         console.error('Payment verification error:', err);
-        alert('验证支付时出错，请刷新页面重试');
+        alert(t('paymentVerifyError'));
     }
 }
 
@@ -399,16 +402,18 @@ function getRemainingDraws() {
 }
 
 function showPaywall() {
+    // 移除已有的 paywall 防止重复
+    closePaywall();
     const paywall = document.createElement('div');
     paywall.id = 'paywall-overlay';
     paywall.className = 'paywall-overlay';
     paywall.innerHTML = `
         <div class="paywall-card">
-            <h3>今日免费次数已用完</h3>
-            <p>每天可免费抽签 ${DAILY_FREE_DRAWS} 次</p>
+            <h3>${t('dailyLimitTitle')}</h3>
+            <p>${t('dailyLimitMsg').replace('{n}', DAILY_FREE_DRAWS)}</p>
             <div class="paywall-buttons">
-                <button class="pay-btn" onclick="payForDraw()">付费抽签 ¥0.99</button>
-                <button class="later-btn" onclick="closePaywall()">明天再来</button>
+                <button class="pay-btn" onclick="payForDraw()">${t('payForDraw')}</button>
+                <button class="later-btn" onclick="closePaywall()">${t('comeback')}</button>
             </div>
         </div>
     `;
@@ -432,11 +437,11 @@ async function payForDraw() {
         if (data.url) {
             window.location.href = data.url;
         } else {
-            alert('支付创建失败，请稍后重试');
+            alert(t('paymentFailed'));
         }
     } catch (err) {
         console.error('Payment error:', err);
-        alert('网络错误，请稍后重试');
+        alert(t('networkError'));
     }
 }
 
@@ -452,7 +457,7 @@ function startDrawing() {
     isDrawing = true;
     recordDraw();
 
-    console.log('开始抽签动画...');
+    console.log('Starting draw animation...');
     
     // 1. 开始摇晃动画
     qiangTong.classList.add('shaking');
@@ -471,8 +476,9 @@ function startDrawing() {
         console.log('移除shaking类');
         
         // 3. 随机抽签
-        const randomIndex = Math.floor(Math.random() * qiangData.length);
-        const result = qiangData[randomIndex];
+        const signs = getSignData();
+        const randomIndex = Math.floor(Math.random() * signs.length);
+        const result = signs[randomIndex];
         
         // 4. 显示和播放签支弹出动画
         drawnQiang.style.display = 'block';
@@ -517,27 +523,27 @@ async function showExplanation() {
     const explanationModal = document.createElement('div');
     explanationModal.id = 'explanation-modal';
     explanationModal.className = 'modal';
-    const explanation = currentQiang.freeExplanation || '此签寓意吉祥，凡事皆宜。保持诚心正念，积极向上，必能心想事成。';
+    const explanation = currentQiang.freeExplanation || t('defaultExplanation');
     const isPurchased = checkPurchased(currentQiang.num);
     const detailed = isPurchased ? getDetailedInterpretation(currentQiang.num) : null;
 
     explanationModal.innerHTML = `
         <div class="modal-content explanation-modal-content">
-            <button class="close-icon-btn" onclick="closeExplanationModal()" aria-label="关闭">×</button>
-            <h2>签文解释</h2>
+            <button class="close-icon-btn" onclick="closeExplanationModal()" aria-label="${t('close')}">×</button>
+            <h2>${t('signExplanation')}</h2>
             <h3>${currentQiang.num}</h3>
-            <p><strong>签文：</strong>${currentQiang.text}</p>
+            <p><strong>${t('signText')}</strong>${currentQiang.text}</p>
             <div class="explanation-content">
-                <p><strong>解签：</strong></p>
+                <p><strong>${t('interpretation')}</strong></p>
                 <p>${explanation}</p>
             </div>
             <div class="detailed-section">
-                <h3 class="detailed-title">详细解签</h3>
+                <h3 class="detailed-title">${t('detailedReading')}</h3>
                 <div class="interpretation-tabs">
-                    <button class="tab-button active" data-tab="career" onclick="switchTab(this, 'career')">事业</button>
-                    <button class="tab-button" data-tab="love" onclick="switchTab(this, 'love')">姻缘</button>
-                    <button class="tab-button" data-tab="health" onclick="switchTab(this, 'health')">健康</button>
-                    <button class="tab-button" data-tab="wealth" onclick="switchTab(this, 'wealth')">财运</button>
+                    <button class="tab-button active" data-tab="career" onclick="switchTab(this, 'career')">${t('tabCareer')}</button>
+                    <button class="tab-button" data-tab="love" onclick="switchTab(this, 'love')">${t('tabLove')}</button>
+                    <button class="tab-button" data-tab="health" onclick="switchTab(this, 'health')">${t('tabHealth')}</button>
+                    <button class="tab-button" data-tab="wealth" onclick="switchTab(this, 'wealth')">${t('tabWealth')}</button>
                 </div>
                 <div class="tab-panels">
                     ${isPurchased ? `
@@ -547,38 +553,38 @@ async function showExplanation() {
                         <div class="tab-panel" id="panel-wealth">${detailed.wealth}</div>
                     ` : `
                         <div class="tab-panel active locked-panel" id="panel-career">
-                            <div class="locked-text">此签事业运势极佳，适合开创新局面...</div>
+                            <div class="locked-text">${t('lockedCareerPreview')}</div>
                             <div class="locked-overlay">
                                 <span class="lock-icon">🔒</span>
-                                <span>解锁查看完整内容</span>
+                                <span>${t('unlockContent')}</span>
                             </div>
                         </div>
                         <div class="tab-panel locked-panel" id="panel-love">
-                            <div class="locked-text">姻缘天注定，此签主良缘已至...</div>
+                            <div class="locked-text">${t('lockedLovePreview')}</div>
                             <div class="locked-overlay">
                                 <span class="lock-icon">🔒</span>
-                                <span>解锁查看完整内容</span>
+                                <span>${t('unlockContent')}</span>
                             </div>
                         </div>
                         <div class="tab-panel locked-panel" id="panel-health">
-                            <div class="locked-text">身体康健，精力充沛...</div>
+                            <div class="locked-text">${t('lockedHealthPreview')}</div>
                             <div class="locked-overlay">
                                 <span class="lock-icon">🔒</span>
-                                <span>解锁查看完整内容</span>
+                                <span>${t('unlockContent')}</span>
                             </div>
                         </div>
                         <div class="tab-panel locked-panel" id="panel-wealth">
-                            <div class="locked-text">财运亨通，正财偏财皆有收获...</div>
+                            <div class="locked-text">${t('lockedWealthPreview')}</div>
                             <div class="locked-overlay">
                                 <span class="lock-icon">🔒</span>
-                                <span>解锁查看完整内容</span>
+                                <span>${t('unlockContent')}</span>
                             </div>
                         </div>
-                        <button class="unlock-button" onclick="unlockDetailed('${currentQiang.num}')">解锁详细解签 ¥1.99</button>
+                        <button class="unlock-button" onclick="unlockDetailed('${currentQiang.num}')">${t('unlockButton')}</button>
                     `}
                 </div>
             </div>
-            <button onclick="closeExplanationModal()">关闭</button>
+            <button onclick="closeExplanationModal()">${t('close')}</button>
         </div>
     `;
     document.body.appendChild(explanationModal);
@@ -644,11 +650,11 @@ async function unlockDetailed(signNum) {
         if (data.url) {
             window.location.href = data.url;
         } else {
-            alert('支付创建失败，请稍后重试');
+            alert(t('paymentFailed'));
         }
     } catch (err) {
         console.error('Payment error:', err);
-        alert('网络错误，请稍后重试');
+        alert(t('networkError'));
     }
 }
 
@@ -661,21 +667,21 @@ function showDonation() {
     donationModal.className = 'modal';
     donationModal.innerHTML = `
         <div class="modal-content donation-content">
-            <button class="close-icon-btn" onclick="closeDonationModal()" aria-label="关闭">×</button>
-            <h2>随喜功德</h2>
-            <p class="donation-message">您的随喜功德，功不唐捐</p>
+            <button class="close-icon-btn" onclick="closeDonationModal()" aria-label="${t('close')}">×</button>
+            <h2>${t('donationTitle')}</h2>
+            <p class="donation-message">${t('donationMessage')}</p>
             <div class="donation-qr-group">
                 <div class="donation-qr-item">
-                    <img src="wechat-qr.png" alt="微信支付" onerror="this.parentElement.style.display='none'">
-                    <span>微信支付</span>
+                    <img src="wechat-qr.png" alt="${t('wechatPay')}" onerror="this.parentElement.style.display='none'">
+                    <span>${t('wechatPay')}</span>
                 </div>
                 <div class="donation-qr-item">
-                    <img src="alipay-qr.png" alt="支付宝" onerror="this.parentElement.style.display='none'">
-                    <span>支付宝</span>
+                    <img src="alipay-qr.png" alt="${t('alipay')}" onerror="this.parentElement.style.display='none'">
+                    <span>${t('alipay')}</span>
                 </div>
             </div>
-            <p class="donation-note">随心随喜，感恩善缘</p>
-            <button onclick="closeDonationModal()">关闭</button>
+            <p class="donation-note">${t('donationNote')}</p>
+            <button onclick="closeDonationModal()">${t('close')}</button>
         </div>
     `;
     document.body.appendChild(donationModal);
@@ -687,4 +693,32 @@ function closeDonationModal() {
     if (donationModal) {
         donationModal.remove();
     }
+}
+
+// Language display names
+const LANG_LABELS = {
+    zh: '中文', en: 'EN', ja: '日本語', ko: '한국어', es: 'ES', fr: 'FR'
+};
+
+// i18n: Initialize UI text from language pack
+function initUI() {
+    document.title = t('siteTitle');
+    document.getElementById('main-hint').textContent = t('clickToDrawHint');
+    const shakeHintText = document.getElementById('shake-hint-text');
+    if (shakeHintText) shakeHintText.textContent = t('shakeToDrawHint');
+    document.getElementById('result-title').textContent = t('congrats');
+    document.getElementById('btn-back').textContent = t('back');
+    document.getElementById('btn-interpret').textContent = t('interpret');
+    document.getElementById('btn-donate').textContent = t('donate');
+    // Language selector
+    const langSelect = document.getElementById('lang-select');
+    if (langSelect) langSelect.value = getCurrentLang();
+}
+
+// Switch language from dropdown
+function switchLanguage(lang) {
+    if (!lang) return;
+    setLanguage(lang);
+    initUI();
+    detectMobile();
 }
