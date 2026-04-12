@@ -65,6 +65,25 @@
     border: 0;
 }
 
+/* Promo link */
+.promo-link {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 6px 16px;
+    font-size: 13px;
+    color: #999;
+    text-decoration: none;
+    border: 1px solid #eee;
+    border-radius: 20px;
+    transition: all 0.3s;
+}
+
+.promo-link:hover {
+    color: #d4af37;
+    border-color: #d4af37;
+    background: #faf6ee;
+}
+
 /* Language selector */
 .lang-select {
     position: fixed;
