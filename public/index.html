@@ -2,7 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Preconnect to third-party origins to reduce DNS+TLS handshake latency. -->
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
+    <link rel="preconnect" href="https://www.clarity.ms" crossorigin>
+    <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin>
+    <link rel="dns-prefetch" href="https://api.stripe.com">
 
     <!-- Google Search Console verification (replace content with your token) -->
     <meta name="google-site-verification" content="REPLACE_WITH_GSC_TOKEN">
@@ -29,9 +35,9 @@
         })(window, document, "clarity", "script", "CLARITY_PROJECT_ID");
     </script>
 
-    <title>Oracle Fortune Sticks - Free Chinese Fortune Telling | 有求必应签</title>
-    <meta name="description" content="Draw a virtual fortune stick and receive divine guidance. Traditional Chinese temple fortune telling experience with free daily readings for career, love, health and wealth.">
-    <meta name="keywords" content="fortune telling, oracle sticks, chinese fortune, divination, temple fortune, 抽签, 求签, 观音灵签">
+    <title>Oracle Fortune Sticks - Free Guanyin Oracle Online | 有求必应签</title>
+    <meta name="description" content="Free online Guanyin Oracle (Kau Chim). Draw a fortune stick and get a reading for career, love, health and wealth. All 100 signs, 6 languages.">
+    <meta name="keywords" content="guanyin oracle, kau chim, chinese fortune sticks, oracle online, divination, 抽签, 求签, 观音灵签">
     <link rel="canonical" href="https://oracleday.xyz/">
 
     <!-- Open Graph -->
@@ -49,14 +55,21 @@
     <meta name="twitter:description" content="Traditional Chinese fortune telling. Draw a stick and discover your fate.">
     <meta name="twitter:image" content="https://oracleday.xyz/qtong.png">
 
-    <!-- hreflang -->
+    <!-- hreflang — all 6 supported locales, not just en/zh. Google needs this
+         to serve the correct language variant in localized SERPs. -->
     <link rel="alternate" hreflang="en" href="https://oracleday.xyz/">
     <link rel="alternate" hreflang="zh" href="https://oracleday.xyz/?lang=zh">
+    <link rel="alternate" hreflang="ja" href="https://oracleday.xyz/?lang=ja">
+    <link rel="alternate" hreflang="ko" href="https://oracleday.xyz/?lang=ko">
+    <link rel="alternate" hreflang="es" href="https://oracleday.xyz/?lang=es">
+    <link rel="alternate" hreflang="fr" href="https://oracleday.xyz/?lang=fr">
     <link rel="alternate" hreflang="x-default" href="https://oracleday.xyz/">
 
     <link rel="stylesheet" href="style.css?v=3">
 
-    <!-- Structured Data -->
+    <!-- Structured Data — WebApplication covers the core product; FAQPage
+         captures the high-intent "how does this work" questions to qualify
+         for rich result FAQ boxes on SERP. -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -67,13 +80,61 @@
         "description": "Traditional Chinese temple fortune stick drawing experience. Shake or tap to draw a fortune stick and receive divine guidance for career, love, health and wealth.",
         "applicationCategory": "EntertainmentApplication",
         "operatingSystem": "Web",
-        "inLanguage": ["en", "zh"],
+        "inLanguage": ["en", "zh", "ja", "ko", "es", "fr"],
         "offers": {
             "@type": "Offer",
             "price": "0",
             "priceCurrency": "USD",
             "description": "3 free fortune draws per day"
         }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "What is the Guanyin Oracle (Kau Chim)?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "The Guanyin Oracle, also known as Kau Chim or Chinese fortune sticks, is a traditional Chinese divination method that originated over 1,000 years ago in Buddhist and Daoist temples. Worshippers shake a bamboo cylinder containing 100 numbered sticks and interpret the stick that falls out as guidance from the goddess Guanyin."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Is Oracle Day free to use?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes. Oracle Day offers 3 free fortune draws per day across all 100 signs in 6 languages (English, Chinese, Japanese, Korean, Spanish, French). A detailed paid reading for career, love, health and wealth is available as an optional $1.99 upgrade per sign."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "How accurate is online fortune telling?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Kau Chim is not a prediction of specific future events. Each of the 100 signs is a poetic mirror that reflects the aspect of your question you may not have considered. Its value comes from forcing you to pause, articulate your question clearly, and sit with an answer you might not have expected."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Can I draw multiple sticks for the same question?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Traditionally, no. The first stick you draw is the answer. Re-drawing is considered refusing the answer rather than re-asking the question. If you have a genuinely different question (different topic or context), you may draw a new stick."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "What does a four-line poem on a fortune stick mean?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Each of the 100 sticks carries a four-line classical Chinese poem that uses natural imagery (dragons, moons, forests) as metaphor. The imagery is not meant to be read literally — bring your question to the poem and the line that resonates most is the oracle's answer for you."
+                }
+            }
+        ]
     }
     </script>
 </head>
@@ -92,7 +153,8 @@
         <!-- SEO: semantic hidden content for search engines -->
         <h1 class="sr-only">Oracle Fortune Sticks - Traditional Chinese Fortune Telling</h1>
         <p class="sr-only">Draw a virtual fortune stick from the sacred jar and receive divine guidance. This ancient Chinese temple tradition offers personalized readings for career, love, health and wealth.</p>
-        <img id="qiang-tong" src="qtong.png" alt="Oracle Fortune Stick Jar">
+        <img id="qiang-tong" src="qtong.png" alt="Oracle Fortune Stick Jar"
+             width="400" height="400" fetchpriority="high" decoding="async">
         <div id="shaking-area">
             <p id="main-hint"></p>
             <div id="shake-hint" style="display:none;">
@@ -100,11 +162,12 @@
                 <div class="shake-animation">📱</div>
             </div>
         </div>
-        <img id="drawn-qiang" src="top_lucky.webp" alt="Fortune Stick" style="display:none;">
+        <img id="drawn-qiang" src="top_lucky.webp" alt="Fortune Stick"
+             width="120" height="400" loading="lazy" decoding="async" style="display:none;">
         <!-- Ad placeholder (hidden until AdSense approved) -->
         <div class="ad-container" id="ad-banner-main" style="display:none;">
         </div>
-        <a href="https://happyhorse.sbs" target="_blank" rel="noopener" class="promo-link" data-track="affiliate_happyhorse">🎬 AI Video Generator</a>
+        <a href="https://happyhorse.sbs" target="_blank" rel="sponsored nofollow noopener" class="promo-link" data-track="affiliate_happyhorse">🎬 AI Video Generator</a>
     </div>
 
     <div id="result-modal" class="modal" style="display:none;">
@@ -126,6 +189,76 @@
         <a id="nav-daily" href="/daily/en.html" data-track="nav_daily">🌅 <span id="nav-daily-label">Today's Oracle</span></a>
         <a id="nav-blog" href="/blog/en/" data-track="nav_blog">📖 <span id="nav-blog-label">Oracle Blog</span></a>
     </nav>
+
+    <!-- Server-rendered content for SEO. Must stay visible (not .sr-only)
+         because Google weighs visible content higher. Copy here is deliberately
+         short and keyword-dense — full translations of these concepts live on
+         per-sign and blog pages. -->
+    <section class="home-about" aria-labelledby="about-heading">
+        <h2 id="about-heading">What is the Guanyin Oracle?</h2>
+        <p>
+            The Guanyin Oracle — known in Cantonese as <strong>Kau Chim</strong> and in
+            Mandarin as <strong>观音灵签</strong> — is one of the oldest surviving forms of
+            Chinese fortune telling. For more than a thousand years, worshippers have
+            shaken a bamboo cylinder of 100 numbered sticks in front of the goddess
+            Guanyin and interpreted whichever stick fell out first as divine guidance.
+        </p>
+        <p>
+            Oracle Day brings the full 100-sign canon online — free, in six
+            languages (English, 中文, 日本語, 한국어, Español, Français), with
+            interpretations for <em>career</em>, <em>love</em>, <em>health</em> and
+            <em>wealth</em>.
+        </p>
+
+        <h2 id="how-heading">How to Draw a Sign</h2>
+        <ol>
+            <li>Take 30 seconds to settle your mind and clarify your question.</li>
+            <li>Ask one specific question — the oracle rewards clarity over breadth.</li>
+            <li>Click the bamboo cylinder above, or shake your phone, to draw.</li>
+            <li>Read the four-line poem twice. Notice which image resonates with your question.</li>
+            <li>Sit with the first answer you draw. Traditionally, re-drawing means refusing the answer.</li>
+        </ol>
+        <p>
+            Want a deeper walkthrough?
+            <a href="/blog/en/how-to-draw-guanyin-oracle.html">Read the full beginner's guide →</a>
+        </p>
+
+        <h2 id="faq-heading">Frequently Asked Questions</h2>
+        <details>
+            <summary>Is Oracle Day free to use?</summary>
+            <p>
+                Yes. Three free draws per day across all 100 signs in 6 languages.
+                A detailed paid reading for career, love, health and wealth is an
+                optional $1.99 upgrade per sign.
+            </p>
+        </details>
+        <details>
+            <summary>How accurate is online fortune telling?</summary>
+            <p>
+                Kau Chim is not a prediction of specific future events. Each sign is a
+                poetic mirror reflecting an aspect of your question you may not have
+                considered. Its value comes from forcing you to pause, articulate the
+                question clearly, and sit with an answer you might not have expected.
+            </p>
+        </details>
+        <details>
+            <summary>Can I draw multiple sticks for the same question?</summary>
+            <p>
+                Traditionally, no — the first stick is the answer. Re-drawing is
+                considered refusing the answer rather than re-asking the question. If
+                you have a different question (topic or context), you may draw a new stick.
+            </p>
+        </details>
+        <details>
+            <summary>What do the four-line poems mean?</summary>
+            <p>
+                Each of the 100 sticks carries a classical Chinese poem that uses
+                natural imagery (dragons, moons, forests) as metaphor. Bring your
+                question to the poem — the image that resonates most is the oracle's
+                answer for you.
+            </p>
+        </details>
+    </section>
 
     <!-- SEO internal link hub: crawl entry point for all 100 sign pages.
          Visually muted but present for search engines and users who want to

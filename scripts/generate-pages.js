@@ -338,6 +338,45 @@ function hreflangTags(n) {
 
 function jsonLd(lang, n, sign, L) {
     const url = signUrl(lang, n);
+    const ogImage = `${SITE_URL}/api/og?lang=${lang}&sign=${n}`;
+
+    // Language-specific FAQ copy for the FAQPage schema on each sign page.
+    // Keep these short — Google penalises FAQ schema that doesn't match visible page text,
+    // so the visible FAQ section below must stay aligned with these.
+    const FAQ_I18N = {
+        en: [
+            { q: `What does Guanyin Oracle Lot ${n} mean?`, a: truncate(sign.freeExplanation || sign.text, 280) },
+            { q: `How do I read a Guanyin Oracle poem?`, a: 'Read the four-line poem twice. Notice which image resonates with your specific question. The imagery is a mirror, not a literal forecast.' },
+            { q: `Should I draw another stick if I don\'t like this one?`, a: 'Traditionally, no. The first stick is the answer. Re-drawing is considered refusing the answer rather than re-asking the question.' },
+        ],
+        zh: [
+            { q: `观音灵签第${n}签什么意思？`, a: truncate(sign.freeExplanation || sign.text, 280) },
+            { q: `观音灵签的签诗怎么读？`, a: '签诗读两遍，留意哪一句或哪一个意象与你的具体问题产生共鸣。签诗是镜子，不是字面的预言。' },
+            { q: `抽到不喜欢的签可以重抽吗？`, a: '传统上不可以。第一支签就是答案。重抽等于拒绝答案而不是重新提问。' },
+        ],
+        ja: [
+            { q: `観音霊籤 第${n}番の意味は？`, a: truncate(sign.freeExplanation || sign.text, 280) },
+            { q: `おみくじの詩はどう読む？`, a: '四行詩を二度読み、質問と最も共鳴するイメージに注目します。詩は鏡であり、字義通りの予言ではありません。' },
+            { q: `気に入らなかったらもう一度引いていい？`, a: '伝統的には不可。最初に引いた籤が答えであり、引き直しは答えを拒否することになります。' },
+        ],
+        ko: [
+            { q: `관음영첨 제${n}첨은 무슨 뜻?`, a: truncate(sign.freeExplanation || sign.text, 280) },
+            { q: `첨시는 어떻게 읽나요?`, a: '네 줄의 시를 두 번 읽고, 질문과 가장 공명하는 이미지를 포착합니다. 첨시는 거울이지 문자 그대로의 예언이 아닙니다.' },
+            { q: `마음에 안 들면 다시 뽑아도 되나요?`, a: '전통적으로는 안 됩니다. 처음 뽑은 첨이 답이며 재뽑기는 답을 거부하는 것으로 간주됩니다.' },
+        ],
+        es: [
+            { q: `¿Qué significa el Oráculo Guanyin Bastón ${n}?`, a: truncate(sign.freeExplanation || sign.text, 280) },
+            { q: `¿Cómo se lee el poema del oráculo?`, a: 'Lee el poema de cuatro líneas dos veces. Observa qué imagen resuena con tu pregunta específica. La imagen es un espejo, no un pronóstico literal.' },
+            { q: `¿Puedo sacar otro bastón si este no me gusta?`, a: 'Tradicionalmente no. El primer bastón es la respuesta. Volver a sacar se considera rechazar la respuesta, no reformular la pregunta.' },
+        ],
+        fr: [
+            { q: `Que signifie l'Oracle Guanyin Bâton ${n} ?`, a: truncate(sign.freeExplanation || sign.text, 280) },
+            { q: `Comment lire le poème de l'oracle ?`, a: 'Lisez le poème de quatre lignes deux fois. Remarquez quelle image résonne avec votre question. L\'image est un miroir, pas une prédiction littérale.' },
+            { q: `Puis-je tirer un autre bâton si celui-ci ne me plaît pas ?`, a: 'Traditionnellement non. Le premier bâton est la réponse. Retirer équivaut à refuser la réponse plutôt qu\'à reposer la question.' },
+        ],
+    };
+    const faq = FAQ_I18N[lang] || FAQ_I18N.en;
+
     const data = {
         '@context': 'https://schema.org',
         '@graph': [
@@ -356,7 +395,7 @@ function jsonLd(lang, n, sign, L) {
                     logo: { '@type': 'ImageObject', url: `${SITE_URL}/qtong.png` },
                 },
                 mainEntityOfPage: { '@type': 'WebPage', '@id': url },
-                image: `${SITE_URL}/top_lucky.webp`,
+                image: ogImage,
             },
             {
                 '@type': 'BreadcrumbList',
@@ -366,9 +405,112 @@ function jsonLd(lang, n, sign, L) {
                     { '@type': 'ListItem', position: 3, name: L.signLabel(n), item: url },
                 ],
             },
+            {
+                '@type': 'FAQPage',
+                mainEntity: faq.map((item) => ({
+                    '@type': 'Question',
+                    name: item.q,
+                    acceptedAnswer: { '@type': 'Answer', text: item.a },
+                })),
+            },
         ],
     };
     return `<script type="application/ld+json">${JSON.stringify(data)}</script>`;
+}
+
+// Visible FAQ block on each sign page — must stay aligned with the FAQPage
+// schema above, otherwise Google penalises the schema as misleading.
+function faqBlock(lang, n, sign) {
+    const FAQ_I18N = {
+        en: {
+            heading: 'Frequently asked questions',
+            items: [
+                { q: `What does Guanyin Oracle Lot ${n} mean?`, a: truncate(sign.freeExplanation || sign.text, 280) },
+                { q: 'How do I read a Guanyin Oracle poem?', a: 'Read the four-line poem twice. Notice which image resonates with your specific question. The imagery is a mirror, not a literal forecast.' },
+                { q: "Should I draw another stick if I don't like this one?", a: 'Traditionally, no. The first stick is the answer. Re-drawing is considered refusing the answer rather than re-asking the question.' },
+            ],
+        },
+        zh: {
+            heading: '常见问题',
+            items: [
+                { q: `观音灵签第${n}签什么意思？`, a: truncate(sign.freeExplanation || sign.text, 280) },
+                { q: '观音灵签的签诗怎么读？', a: '签诗读两遍，留意哪一句或哪一个意象与你的具体问题产生共鸣。签诗是镜子，不是字面的预言。' },
+                { q: '抽到不喜欢的签可以重抽吗？', a: '传统上不可以。第一支签就是答案。重抽等于拒绝答案而不是重新提问。' },
+            ],
+        },
+        ja: {
+            heading: 'よくある質問',
+            items: [
+                { q: `観音霊籤 第${n}番の意味は？`, a: truncate(sign.freeExplanation || sign.text, 280) },
+                { q: 'おみくじの詩はどう読む？', a: '四行詩を二度読み、質問と最も共鳴するイメージに注目します。詩は鏡であり、字義通りの予言ではありません。' },
+                { q: '気に入らなかったらもう一度引いていい？', a: '伝統的には不可。最初に引いた籤が答えであり、引き直しは答えを拒否することになります。' },
+            ],
+        },
+        ko: {
+            heading: '자주 묻는 질문',
+            items: [
+                { q: `관음영첨 제${n}첨은 무슨 뜻?`, a: truncate(sign.freeExplanation || sign.text, 280) },
+                { q: '첨시는 어떻게 읽나요?', a: '네 줄의 시를 두 번 읽고, 질문과 가장 공명하는 이미지를 포착합니다. 첨시는 거울이지 문자 그대로의 예언이 아닙니다.' },
+                { q: '마음에 안 들면 다시 뽑아도 되나요?', a: '전통적으로는 안 됩니다. 처음 뽑은 첨이 답이며 재뽑기는 답을 거부하는 것으로 간주됩니다.' },
+            ],
+        },
+        es: {
+            heading: 'Preguntas frecuentes',
+            items: [
+                { q: `¿Qué significa el Oráculo Guanyin Bastón ${n}?`, a: truncate(sign.freeExplanation || sign.text, 280) },
+                { q: '¿Cómo se lee el poema del oráculo?', a: 'Lee el poema de cuatro líneas dos veces. Observa qué imagen resuena con tu pregunta específica. La imagen es un espejo, no un pronóstico literal.' },
+                { q: '¿Puedo sacar otro bastón si este no me gusta?', a: 'Tradicionalmente no. El primer bastón es la respuesta. Volver a sacar se considera rechazar la respuesta, no reformular la pregunta.' },
+            ],
+        },
+        fr: {
+            heading: 'Questions fréquentes',
+            items: [
+                { q: `Que signifie l'Oracle Guanyin Bâton ${n} ?`, a: truncate(sign.freeExplanation || sign.text, 280) },
+                { q: "Comment lire le poème de l'oracle ?", a: "Lisez le poème de quatre lignes deux fois. Remarquez quelle image résonne avec votre question. L'image est un miroir, pas une prédiction littérale." },
+                { q: 'Puis-je tirer un autre bâton si celui-ci ne me plaît pas ?', a: "Traditionnellement non. Le premier bâton est la réponse. Retirer équivaut à refuser la réponse plutôt qu'à reposer la question." },
+            ],
+        },
+    };
+    const pack = FAQ_I18N[lang] || FAQ_I18N.en;
+    const items = pack.items.map((it) => `
+                    <details>
+                        <summary>${escapeHtml(it.q)}</summary>
+                        <p>${escapeHtml(it.a)}</p>
+                    </details>`).join('');
+    return `
+            <section class="faq-section" aria-labelledby="faq-heading-${n}">
+                <h2 id="faq-heading-${n}">${escapeHtml(pack.heading)}</h2>
+                ${items}
+            </section>`;
+}
+
+// "Learn more" block linking to related blog posts. Currently only EN+ZH have
+// translated posts; other locales fall back to English.
+function blogLinksBlock(lang) {
+    const BLOG = {
+        en: {
+            heading: 'Learn more about the Guanyin Oracle',
+            posts: [
+                { href: '/blog/en/how-to-draw-guanyin-oracle.html', title: 'How to Draw a Guanyin Oracle Sign — Complete Beginner\'s Guide' },
+                { href: '/blog/en/chinese-fortune-sticks-meaning.html', title: 'Chinese Fortune Sticks — What the 100 Numbers Actually Mean' },
+                { href: '/blog/en/kau-chim-vs-tarot.html', title: 'Kau Chim vs Tarot — Which Oracle is More Accurate?' },
+            ],
+        },
+        zh: {
+            heading: '延伸阅读',
+            posts: [
+                { href: '/blog/zh/guanyin-lingqian-zhun-ma.html', title: '观音灵签准不准？一篇写给半信半疑的人看的文章' },
+                { href: '/blog/zh/qiuqian-qian-yao-zuo-shenme.html', title: '求签前要做什么？一份给现代人的简易仪式' },
+            ],
+        },
+    };
+    const pack = BLOG[lang] || BLOG.en;
+    const items = pack.posts.map((p) => `<li><a href="${p.href}" data-track="sign_to_blog">${escapeHtml(p.title)}</a></li>`).join('');
+    return `
+            <section class="blog-links-section">
+                <h2>${escapeHtml(pack.heading)}</h2>
+                <ul class="blog-links">${items}</ul>
+            </section>`;
 }
 
 function relatedLinks(lang, n, L) {
@@ -531,6 +673,7 @@ function renderSignPage(lang, n, sign) {
     <meta property="og:image" content="${ogImage}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="${escapeHtml(L.signLabel(n))}">
     <meta property="og:locale" content="${L.ogLocale}">
     <meta property="og:site_name" content="${escapeHtml(L.siteName)}">
 
@@ -540,10 +683,15 @@ function renderSignPage(lang, n, sign) {
     <meta name="twitter:description" content="${escapeHtml(truncate(sign.freeExplanation || sign.text, 200))}">
     <meta name="twitter:image" content="${ogImage}">
 
-    <!-- Pinterest vertical pin hint -->
-    <meta property="og:image" content="${ogImagePin}">
-    <meta property="og:image:width" content="1000">
-    <meta property="og:image:height" content="1500">
+    <!-- Pinterest-preferred vertical image; served via data-pin-media so
+         Pinterest's Save button uses the 1000×1500 version while Twitter
+         and Facebook stick with the standard 1200×630 og:image above. -->
+    <meta name="pinterest:image" content="${ogImagePin}">
+
+    <!-- Preconnect to third-party origins. -->
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
+    <link rel="preconnect" href="https://www.clarity.ms" crossorigin>
+    <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin>
 
     <!-- hreflang -->
 ${hreflangTags(n)}
@@ -586,6 +734,17 @@ ${hreflangTags(n)}
         .amazon-grid li a { display:block; padding:14px; background:#fff; border-radius:8px; color:#8B4513; text-decoration:none; box-shadow:0 2px 6px rgba(0,0,0,.06); text-align:center; }
         .amazon-grid li a:hover { background:#fff8e1; }
         .ad-slot { margin: 24px 0; min-height: 100px; }
+        .faq-section { margin-top: 32px; }
+        .faq-section details { background:#fff; border:1px solid #e0cc94; border-radius:8px; padding:10px 14px; margin:8px 0; }
+        .faq-section summary { cursor:pointer; font-weight:600; color:#8B4513; list-style:none; padding:4px 0; }
+        .faq-section summary::-webkit-details-marker { display:none; }
+        .faq-section details[open] summary { margin-bottom:8px; }
+        .faq-section details p { margin:4px 0; color:#4a3010; font-size:.95rem; }
+        .blog-links-section { margin-top:32px; }
+        .blog-links { list-style:none; padding:0; }
+        .blog-links li { background:#fff; padding:12px 16px; border-radius:8px; margin:8px 0; box-shadow:0 2px 6px rgba(0,0,0,.06); }
+        .blog-links li a { color:#8B1A1A; text-decoration:none; font-weight:600; }
+        .blog-links li a:hover { text-decoration:underline; }
     </style>
 ${analyticsHead()}
 
@@ -624,6 +783,10 @@ ${analyticsHead()}
 
             ${shareButtons(lang, n, sign, L)}
 
+            ${faqBlock(lang, n, sign)}
+
+            ${blogLinksBlock(lang)}
+
             ${amazonProducts(lang, L)}
 
             ${adSenseBlock('2222222222')}
@@ -656,9 +819,29 @@ ${analyticsHead()}
 function renderDailyPage(lang) {
     const L = LABELS[lang];
     const url = `${SITE_URL}/daily/${lang}.html`;
-    // Deterministic sign of the day from date string, computed client-side so
-    // CDN cache stays friendly and content updates each calendar day without
-    // a redeploy.
+    // Render a full, indexable content shell. Today's sign is picked client-side
+    // via a date hash so the CDN-cached HTML stays static, but the noscript
+    // fallback and the full 100-sign grid below give crawlers real content to
+    // index — replacing the previous pure-JS redirect which left crawlers with
+    // a blank page.
+
+    // All 100 sign teasers for discovery/crawl. Loaded from the I18N pack.
+    const pack = I18N[lang];
+    const teaserItems = [];
+    for (let n = 1; n <= SIGN_COUNT; n++) {
+        const s = pack && pack.signs && pack.signs[n - 1];
+        const label = s && s.num ? s.num : `#${n}`;
+        teaserItems.push(`<li><a href="/sign/${lang}/${n}.html">${escapeHtml(label)}</a></li>`);
+    }
+
+    const noscriptLabel =
+        lang === 'zh' ? '浏览所有 100 支签文' :
+        lang === 'ja' ? 'おみくじ一覧（100 本）' :
+        lang === 'ko' ? '전체 100첨 보기' :
+        lang === 'es' ? 'Ver los 100 bastones' :
+        lang === 'fr' ? 'Voir les 100 bâtons' :
+        'Browse all 100 signs';
+
     return `<!DOCTYPE html>
 <html lang="${L.htmlLang}">
 <head>
@@ -670,27 +853,73 @@ function renderDailyPage(lang) {
     <meta property="og:type" content="website">
     <meta property="og:title" content="${escapeHtml(L.dailyHeading)}">
     <meta property="og:description" content="${escapeHtml(L.dailyIntro)}">
-    <meta property="og:image" content="${SITE_URL}/top_lucky.webp">
+    <meta property="og:image" content="${SITE_URL}/api/og?lang=${lang}&sign=1">
+    <meta property="og:url" content="${url}">
+    <meta property="og:locale" content="${L.ogLocale}">
+    <meta name="twitter:card" content="summary_large_image">
 ${LANGS.map((l) => `    <link rel="alternate" hreflang="${l}" href="${SITE_URL}/daily/${l}.html">`).join('\n')}
     <link rel="alternate" hreflang="x-default" href="${SITE_URL}/daily/en.html">
     <link rel="stylesheet" href="/style.css?v=3">
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
 ${analyticsHead()}
+    <script type="application/ld+json">${JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebPage',
+        name: `${L.dailyHeading} - ${L.siteName}`,
+        url,
+        inLanguage: L.htmlLang,
+        description: L.dailyIntro,
+        isPartOf: { '@type': 'WebSite', name: L.siteName, url: SITE_URL },
+    })}</script>
+    <style>
+        body.daily-page { background:#f7eed6; color:#2b1a0a; font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans",sans-serif; margin:0; line-height:1.7; }
+        .daily-container { max-width: 780px; margin: 0 auto; padding: 40px 20px 80px; }
+        .daily-container h1 { color:#8B1A1A; font-size: 2rem; margin-bottom: 8px; }
+        .daily-container h2 { color:#8B1A1A; font-size: 1.2rem; margin-top: 2em; }
+        .daily-hero { background: #fff; border-radius: 14px; padding: 28px; margin: 20px 0; box-shadow: 0 4px 12px rgba(0,0,0,.08); }
+        .daily-cta { display: inline-block; margin-top: 16px; padding: 12px 22px; background: linear-gradient(145deg,#FFD700,#FFA500); color:#8B4513; text-decoration:none; border-radius: 999px; font-weight: 700; }
+        .daily-grid { list-style:none; padding:0; display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 6px; margin-top: 8px; }
+        .daily-grid li a { display:block; text-align:center; padding:6px 8px; background:#fff; color:#8B1A1A; text-decoration:none; border-radius:6px; font-size:.85rem; }
+        .daily-grid li a:hover { background:#ffe8a3; }
+    </style>
 </head>
-<body>
-    <main class="sign-container" style="max-width:780px;margin:0 auto;padding:40px 20px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;">
+<body class="daily-page">
+    <main class="daily-container">
+        <nav class="breadcrumbs"><a href="/?lang=${lang}">${escapeHtml(L.breadcrumbHome)}</a> › <span>${escapeHtml(L.dailyHeading)}</span></nav>
         <h1>${escapeHtml(L.dailyHeading)}</h1>
         <p>${escapeHtml(L.dailyIntro)}</p>
-        <p id="daily-target">Loading…</p>
+
+        <div class="daily-hero" id="daily-hero">
+            <p id="daily-status" aria-live="polite">…</p>
+            <noscript>
+                <p>${escapeHtml(noscriptLabel)}:</p>
+            </noscript>
+        </div>
+
+        <!-- Always-rendered full grid so search engines index the navigation
+             and users without JS still have a path to every sign. -->
+        <h2>${escapeHtml(noscriptLabel)}</h2>
+        <ul class="daily-grid">${teaserItems.join('')}</ul>
     </main>
     <script>
-        // Hash today's date to pick one of ${SIGN_COUNT} signs deterministically per day.
+        // Pick today's sign from a UTC-date hash and update the hero block
+        // in place. No redirect — the page itself is the content.
         (function(){
+            var status = document.getElementById('daily-status');
+            if (!status) return;
             var date = new Date();
             var key = date.getUTCFullYear() + '-' + (date.getUTCMonth()+1) + '-' + date.getUTCDate();
             var hash = 0;
             for (var i = 0; i < key.length; i++) hash = ((hash << 5) - hash + key.charCodeAt(i)) | 0;
             var n = (Math.abs(hash) % ${SIGN_COUNT}) + 1;
-            window.location.replace('/sign/${lang}/' + n + '.html?src=daily');
+            var link = document.createElement('a');
+            link.className = 'daily-cta';
+            link.href = '/sign/${lang}/' + n + '.html?src=daily';
+            link.setAttribute('data-track', 'daily_open_sign');
+            link.textContent = '${lang === 'zh' ? '查看第 ' : lang === 'ja' ? '第 ' : lang === 'ko' ? '제 ' : 'Open sign #'}' + n${lang === 'zh' ? " + ' 签 →'" : lang === 'ja' ? " + ' 番 →'" : lang === 'ko' ? " + ' 첨 →'" : " + ' →'"};
+            status.textContent = '${lang === 'zh' ? '今日为' : lang === 'ja' ? '今日は第' : lang === 'ko' ? '오늘은' : 'Your sign of the day'}' + ' ' + n${lang === 'zh' ? " + ' 签'" : lang === 'ja' ? " + ' 番'" : lang === 'ko' ? " + ' 첨'" : "''"};
+            status.parentNode.appendChild(link);
+            if (typeof gtag === 'function') gtag('event', 'daily_shown', { sign_num: n, lang: '${lang}' });
         })();
     </script>
 </body>

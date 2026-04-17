@@ -2,5 +2,12 @@ User-agent: *
 Allow: /
 Allow: /sign/
 Allow: /daily/
+Allow: /blog/
+Allow: /api/og
+
+# Payment / interpretation endpoints are POST-only — no crawl value.
+Disallow: /api/create-checkout
+Disallow: /api/verify-session
+Disallow: /api/get-interpretation
 
 Sitemap: https://oracleday.xyz/sitemap.xml

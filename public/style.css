@@ -871,3 +871,42 @@ body {
     background: #fff8e1;
     transform: translateY(-1px);
 }
+
+/* ---------- Homepage About/FAQ content block (SEO) ---------- */
+.home-about {
+    max-width: 720px;
+    margin: 40px auto 0;
+    padding: 24px;
+    background: rgba(255, 255, 255, 0.75);
+    border-radius: 12px;
+    color: #2b1a0a;
+    line-height: 1.7;
+}
+.home-about h2 {
+    color: #8B1A1A;
+    font-size: 1.4rem;
+    margin-top: 28px;
+    margin-bottom: 10px;
+}
+.home-about h2:first-child { margin-top: 0; }
+.home-about p { margin: 10px 0; }
+.home-about ol { padding-left: 1.3em; margin: 10px 0; }
+.home-about ol li { margin: 6px 0; }
+.home-about a { color: #8B1A1A; }
+.home-about details {
+    margin: 8px 0;
+    background: #fff;
+    border-radius: 8px;
+    padding: 10px 14px;
+    border: 1px solid #e0cc94;
+}
+.home-about details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: #8B4513;
+    list-style: none;
+    padding: 4px 0;
+}
+.home-about details summary::-webkit-details-marker { display: none; }
+.home-about details[open] summary { margin-bottom: 8px; }
+.home-about details p { margin: 4px 0 8px; color: #4a3010; font-size: 0.95rem; }
