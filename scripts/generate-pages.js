@@ -293,8 +293,18 @@ function mkdirp(dir) {
 }
 
 function writeFile(p, content) {
+    // Sanity check — catch any accidental undefined/empty content from a
+    // renderer bug before we write a garbage file.
+    if (typeof content !== 'string' || content.length === 0) {
+        throw new Error(`writeFile refused: empty content for ${p}`);
+    }
     mkdirp(path.dirname(p));
     fs.writeFileSync(p, content, 'utf8');
+    // Verify the file is actually on disk before we move on. Catches rare
+    // filesystem flush issues on some CI environments (observed on Vercel).
+    if (!fs.existsSync(p)) {
+        throw new Error(`writeFile verification failed: ${p} not on disk after write`);
+    }
 }
 
 function signPath(lang, n) {
@@ -1298,6 +1308,19 @@ function main() {
     if (fs.existsSync(DAILY_DIR)) fs.rmSync(DAILY_DIR, { recursive: true, force: true });
     if (fs.existsSync(BLOG_DIR)) fs.rmSync(BLOG_DIR, { recursive: true, force: true });
 
+    // Precreate every output directory upfront. Doing this before the write
+    // loop eliminates any per-file lazy mkdir race that showed up on Vercel's
+    // build filesystem.
+    mkdirp(SIGN_DIR);
+    mkdirp(DAILY_DIR);
+    mkdirp(BLOG_DIR);
+    for (const lang of LANGS) {
+        mkdirp(path.join(SIGN_DIR, lang));
+    }
+    for (const lang of Object.keys(blogPosts)) {
+        mkdirp(path.join(BLOG_DIR, lang));
+    }
+
     for (const lang of LANGS) {
         const pack = I18N[lang];
         if (!pack || !Array.isArray(pack.signs)) {
@@ -1310,11 +1333,19 @@ function main() {
                 skipped++;
                 continue;
             }
-            const html = renderSignPage(lang, n, sign);
-            writeFile(path.join(SIGN_DIR, lang, `${n}.html`), html);
-            signPagesWritten++;
+            try {
+                const html = renderSignPage(lang, n, sign);
+                writeFile(path.join(SIGN_DIR, lang, `${n}.html`), html);
+                signPagesWritten++;
+            } catch (err) {
+                // Make failures loud so CI logs show exactly which (lang, n)
+                // caused the problem instead of a generic filesystem error.
+                console.error(`[fail] sign ${lang}/${n}:`, err && err.message ? err.message : err);
+                throw err;
+            }
         }
         writeFile(path.join(DAILY_DIR, `${lang}.html`), renderDailyPage(lang));
+        console.log(`  ✓ ${lang}: 100 signs + daily`);
     }
 
     // Blog posts + per-language index
@@ -1331,10 +1362,29 @@ function main() {
     const sitemap = buildSitemap();
     writeFile(SITEMAP_PATH, sitemap);
 
-    console.log(`✔ Wrote ${signPagesWritten} sign pages (${skipped} skipped).`);
+    // Final disk-level verification. If this fails, the build should fail
+    // loudly so Vercel doesn't deploy a half-written output.
+    const expected = LANGS.length * SIGN_COUNT;
+    let onDisk = 0;
+    for (const lang of LANGS) {
+        for (let n = 1; n <= SIGN_COUNT; n++) {
+            if (fs.existsSync(path.join(SIGN_DIR, lang, `${n}.html`))) onDisk++;
+        }
+    }
+    if (onDisk !== expected) {
+        throw new Error(`Sign page count mismatch: expected ${expected}, found ${onDisk} on disk`);
+    }
+
+    console.log(`✔ Wrote ${signPagesWritten} sign pages (${skipped} skipped, ${onDisk} verified on disk).`);
     console.log(`✔ Wrote ${LANGS.length} daily oracle pages.`);
     console.log(`✔ Wrote ${blogPagesWritten} blog posts + ${Object.keys(blogPosts).length} blog indexes.`);
     console.log(`✔ Wrote sitemap.xml with ${1 + LANGS.length + signPagesWritten + blogPagesWritten + Object.keys(blogPosts).length} URLs.`);
 }
 
-main();
+try {
+    main();
+} catch (err) {
+    // Surface the full stack and failure context in CI logs.
+    console.error('[generate-pages] build failed:', err && err.stack ? err.stack : err);
+    process.exit(1);
+}
