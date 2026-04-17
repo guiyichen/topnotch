@@ -842,3 +842,32 @@ body {
 .sign-index li a:hover {
     background: #ffe8a3;
 }
+
+/* ---------- Primary nav (Daily + Blog quick links) ---------- */
+.primary-nav {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 24px auto 0;
+    padding: 0 16px;
+    max-width: 960px;
+}
+.primary-nav a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 18px;
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid #e0cc94;
+    border-radius: 999px;
+    color: #8B1A1A;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: background 0.15s, transform 0.1s;
+}
+.primary-nav a:hover {
+    background: #fff8e1;
+    transform: translateY(-1px);
+}

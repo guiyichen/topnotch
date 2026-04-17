@@ -120,6 +120,13 @@
         </div>
     </div>
 
+    <!-- Primary navigation: quick links to Daily Oracle and Blog.
+         Each language swaps the href at runtime via the script below. -->
+    <nav class="primary-nav" aria-label="Site sections">
+        <a id="nav-daily" href="/daily/en.html" data-track="nav_daily">🌅 <span id="nav-daily-label">Today's Oracle</span></a>
+        <a id="nav-blog" href="/blog/en/" data-track="nav_blog">📖 <span id="nav-blog-label">Oracle Blog</span></a>
+    </nav>
+
     <!-- SEO internal link hub: crawl entry point for all 100 sign pages.
          Visually muted but present for search engines and users who want to
          browse a specific sign directly. Generated language links are
@@ -136,21 +143,41 @@
     <script src="i18n-extra.js?v=3"></script>
     <script src="script.js?v=3"></script>
     <script>
-        // Populate the sign index once i18n is loaded. Using the current
-        // language, we link every sign to its static SEO page.
+        // Populate the sign index + primary nav once i18n is loaded.
+        // Using the current language, we link every sign to its static SEO
+        // page and localize the Daily / Blog nav entries.
         (function () {
-            var list = document.getElementById('sign-index-list');
-            if (!list || typeof I18N === 'undefined') return;
+            if (typeof I18N === 'undefined') return;
             var lang = (typeof getCurrentLang === 'function') ? getCurrentLang() : 'en';
             var pack = I18N[lang] || I18N.en;
-            var signs = (pack && pack.signs) || [];
-            var html = '';
-            for (var i = 0; i < signs.length; i++) {
-                var n = i + 1;
-                var label = signs[i] && signs[i].num ? signs[i].num : ('#' + n);
-                html += '<li><a href="/sign/' + lang + '/' + n + '.html">' + label + '</a></li>';
+
+            // Sign index list
+            var list = document.getElementById('sign-index-list');
+            if (list) {
+                var signs = (pack && pack.signs) || [];
+                var html = '';
+                for (var i = 0; i < signs.length; i++) {
+                    var n = i + 1;
+                    var label = signs[i] && signs[i].num ? signs[i].num : ('#' + n);
+                    html += '<li><a href="/sign/' + lang + '/' + n + '.html">' + label + '</a></li>';
+                }
+                list.innerHTML = html;
             }
-            list.innerHTML = html;
+
+            // Primary nav — localize hrefs + labels.
+            // Blog currently only exists for en/zh, so fall back to en for
+            // locales that don't have translated posts yet.
+            var BLOG_LANGS = { en: 1, zh: 1 };
+            var dailyEl = document.getElementById('nav-daily');
+            var dailyLabelEl = document.getElementById('nav-daily-label');
+            var blogEl = document.getElementById('nav-blog');
+            var blogLabelEl = document.getElementById('nav-blog-label');
+            var DAILY_LABELS = { en: "Today's Oracle", zh: '今日一签', ja: '今日のおみくじ', ko: '오늘의 첨', es: 'Oráculo de hoy', fr: 'Oracle du jour' };
+            var BLOG_LABELS = { en: 'Oracle Blog', zh: '签文博客', ja: 'ブログ', ko: '블로그', es: 'Blog', fr: 'Blog' };
+            if (dailyEl) dailyEl.href = '/daily/' + lang + '.html';
+            if (dailyLabelEl) dailyLabelEl.textContent = DAILY_LABELS[lang] || DAILY_LABELS.en;
+            if (blogEl) blogEl.href = '/blog/' + (BLOG_LANGS[lang] ? lang : 'en') + '/';
+            if (blogLabelEl) blogLabelEl.textContent = BLOG_LABELS[lang] || BLOG_LABELS.en;
         })();
     </script>
 </body>
