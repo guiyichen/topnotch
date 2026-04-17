@@ -299,9 +299,22 @@ function writeFile(p, content) {
         throw new Error(`writeFile refused: empty content for ${p}`);
     }
     mkdirp(path.dirname(p));
-    fs.writeFileSync(p, content, 'utf8');
-    // Verify the file is actually on disk before we move on. Catches rare
-    // filesystem flush issues on some CI environments (observed on Vercel).
+    // Use explicit open/write/fsync/close instead of writeFileSync.
+    //
+    // On Vercel's build filesystem we repeatedly saw the post-build upload
+    // step fail with ENOENT on a random file (ja/52.html one build,
+    // fr/80.html the next). Our generator completed and `existsSync` returned
+    // true for every file, yet Vercel's next stage couldn't open them. This
+    // is the signature of delayed inode sync — the file is in the write cache
+    // but not persisted by the time Vercel starts uploading. fsync forces
+    // the kernel to flush data + metadata to disk before we continue.
+    const fd = fs.openSync(p, 'w');
+    try {
+        fs.writeSync(fd, content, 0, 'utf8');
+        fs.fsyncSync(fd);
+    } finally {
+        fs.closeSync(fd);
+    }
     if (!fs.existsSync(p)) {
         throw new Error(`writeFile verification failed: ${p} not on disk after write`);
     }
@@ -1375,7 +1388,26 @@ function main() {
         throw new Error(`Sign page count mismatch: expected ${expected}, found ${onDisk} on disk`);
     }
 
-    console.log(`✔ Wrote ${signPagesWritten} sign pages (${skipped} skipped, ${onDisk} verified on disk).`);
+    // Belt-and-suspenders: fsync every output directory so the filename
+    // entries themselves are persisted. Without this, Linux can report the
+    // file as "created" via fsync(fd) but the directory listing may still be
+    // in buffer cache when a separate process tries to open the path.
+    const dirsToSync = [SIGN_DIR, DAILY_DIR, BLOG_DIR];
+    for (const lang of LANGS) dirsToSync.push(path.join(SIGN_DIR, lang));
+    for (const lang of Object.keys(blogPosts)) dirsToSync.push(path.join(BLOG_DIR, lang));
+    for (const d of dirsToSync) {
+        if (!fs.existsSync(d)) continue;
+        try {
+            const dfd = fs.openSync(d, 'r');
+            fs.fsyncSync(dfd);
+            fs.closeSync(dfd);
+        } catch (e) {
+            // fsync on directories fails on some platforms (e.g. Windows) —
+            // that's fine, the per-file fsync already handled the data side.
+        }
+    }
+
+    console.log(`✔ Wrote ${signPagesWritten} sign pages (${skipped} skipped, ${onDisk} verified on disk, dirs fsynced).`);
     console.log(`✔ Wrote ${LANGS.length} daily oracle pages.`);
     console.log(`✔ Wrote ${blogPagesWritten} blog posts + ${Object.keys(blogPosts).length} blog indexes.`);
     console.log(`✔ Wrote sitemap.xml with ${1 + LANGS.length + signPagesWritten + blogPagesWritten + Object.keys(blogPosts).length} URLs.`);
