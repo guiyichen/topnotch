@@ -1,5 +1,6 @@
 {
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" }
+    { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/sign/:lang/:n.html", "destination": "/api/sign?lang=:lang&n=:n" }
   ]
 }

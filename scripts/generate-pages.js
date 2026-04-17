@@ -38,6 +38,7 @@ const SITEMAP_PATH = path.join(PUBLIC_DIR, 'sitemap.xml');
 const BUILD_DATE = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
 const CONTENT_DIR = path.join(ROOT, 'content', 'blog');
 const BLOG_DIR = path.join(PUBLIC_DIR, 'blog');
+const SIGN_DATA_BUNDLE = path.join(ROOT, 'lib', 'sign-data.json');
 
 // ---------- Load i18n into a Node context ----------
 // Both i18n.js and i18n-extra.js are browser scripts that declare a top-level
@@ -1313,52 +1314,46 @@ const detailedData = JSON.parse(
 const blogPosts = loadBlogPosts();
 
 function main() {
-    let signPagesWritten = 0;
-    let skipped = 0;
 
     // Clean any stale directories first to avoid orphan pages after edits.
+    // Note: we no longer write 600 static sign HTML files — those are now
+    // served by api/sign.tsx (edge function). The generator still cleans
+    // SIGN_DIR in case a previous build left files behind.
     if (fs.existsSync(SIGN_DIR)) fs.rmSync(SIGN_DIR, { recursive: true, force: true });
     if (fs.existsSync(DAILY_DIR)) fs.rmSync(DAILY_DIR, { recursive: true, force: true });
     if (fs.existsSync(BLOG_DIR)) fs.rmSync(BLOG_DIR, { recursive: true, force: true });
 
-    // Precreate every output directory upfront. Doing this before the write
-    // loop eliminates any per-file lazy mkdir race that showed up on Vercel's
-    // build filesystem.
-    mkdirp(SIGN_DIR);
+    // Precreate output directories we actually write to upfront.
     mkdirp(DAILY_DIR);
     mkdirp(BLOG_DIR);
-    for (const lang of LANGS) {
-        mkdirp(path.join(SIGN_DIR, lang));
-    }
     for (const lang of Object.keys(blogPosts)) {
         mkdirp(path.join(BLOG_DIR, lang));
     }
+    mkdirp(path.dirname(SIGN_DATA_BUNDLE));
 
+    // Dump the per-language sign arrays + detailed zh interpretations into a
+    // single JSON bundle that api/sign.tsx imports. This is the ONLY sign-
+    // related output; no 600 static HTML files anymore.
+    const bundle = { signs: {}, detailed: detailedData };
+    for (const lang of LANGS) {
+        const pack = I18N[lang];
+        if (pack && Array.isArray(pack.signs)) {
+            bundle.signs[lang] = pack.signs;
+        }
+    }
+    writeFile(SIGN_DATA_BUNDLE, JSON.stringify(bundle));
+    console.log(`  ✓ sign-data.json: ${LANGS.length} langs, ${SIGN_COUNT} signs each`);
+
+    // Only daily pages are still written as static HTML. Sign pages (600) are
+    // now served by api/sign.tsx via a vercel.json rewrite — URLs unchanged.
     for (const lang of LANGS) {
         const pack = I18N[lang];
         if (!pack || !Array.isArray(pack.signs)) {
             console.warn(`[skip] no signs for lang=${lang}`);
             continue;
         }
-        for (let n = 1; n <= SIGN_COUNT; n++) {
-            const sign = pack.signs[n - 1];
-            if (!sign) {
-                skipped++;
-                continue;
-            }
-            try {
-                const html = renderSignPage(lang, n, sign);
-                writeFile(path.join(SIGN_DIR, lang, `${n}.html`), html);
-                signPagesWritten++;
-            } catch (err) {
-                // Make failures loud so CI logs show exactly which (lang, n)
-                // caused the problem instead of a generic filesystem error.
-                console.error(`[fail] sign ${lang}/${n}:`, err && err.message ? err.message : err);
-                throw err;
-            }
-        }
         writeFile(path.join(DAILY_DIR, `${lang}.html`), renderDailyPage(lang));
-        console.log(`  ✓ ${lang}: 100 signs + daily`);
+        console.log(`  ✓ ${lang}: daily`);
     }
 
     // Blog posts + per-language index
@@ -1375,42 +1370,11 @@ function main() {
     const sitemap = buildSitemap();
     writeFile(SITEMAP_PATH, sitemap);
 
-    // Final disk-level verification. If this fails, the build should fail
-    // loudly so Vercel doesn't deploy a half-written output.
-    const expected = LANGS.length * SIGN_COUNT;
-    let onDisk = 0;
-    for (const lang of LANGS) {
-        for (let n = 1; n <= SIGN_COUNT; n++) {
-            if (fs.existsSync(path.join(SIGN_DIR, lang, `${n}.html`))) onDisk++;
-        }
-    }
-    if (onDisk !== expected) {
-        throw new Error(`Sign page count mismatch: expected ${expected}, found ${onDisk} on disk`);
-    }
-
-    // Belt-and-suspenders: fsync every output directory so the filename
-    // entries themselves are persisted. Without this, Linux can report the
-    // file as "created" via fsync(fd) but the directory listing may still be
-    // in buffer cache when a separate process tries to open the path.
-    const dirsToSync = [SIGN_DIR, DAILY_DIR, BLOG_DIR];
-    for (const lang of LANGS) dirsToSync.push(path.join(SIGN_DIR, lang));
-    for (const lang of Object.keys(blogPosts)) dirsToSync.push(path.join(BLOG_DIR, lang));
-    for (const d of dirsToSync) {
-        if (!fs.existsSync(d)) continue;
-        try {
-            const dfd = fs.openSync(d, 'r');
-            fs.fsyncSync(dfd);
-            fs.closeSync(dfd);
-        } catch (e) {
-            // fsync on directories fails on some platforms (e.g. Windows) —
-            // that's fine, the per-file fsync already handled the data side.
-        }
-    }
-
-    console.log(`✔ Wrote ${signPagesWritten} sign pages (${skipped} skipped, ${onDisk} verified on disk, dirs fsynced).`);
+    const signUrlsInSitemap = LANGS.length * SIGN_COUNT;
+    console.log(`✔ Sign pages: served dynamically via api/sign.tsx (${signUrlsInSitemap} URLs in sitemap).`);
     console.log(`✔ Wrote ${LANGS.length} daily oracle pages.`);
     console.log(`✔ Wrote ${blogPagesWritten} blog posts + ${Object.keys(blogPosts).length} blog indexes.`);
-    console.log(`✔ Wrote sitemap.xml with ${1 + LANGS.length + signPagesWritten + blogPagesWritten + Object.keys(blogPosts).length} URLs.`);
+    console.log(`✔ Wrote sitemap.xml with ${1 + LANGS.length + signUrlsInSitemap + blogPagesWritten + Object.keys(blogPosts).length} URLs.`);
 }
 
 try {

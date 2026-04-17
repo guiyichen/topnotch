@@ -9,3 +9,6 @@ node_modules/
 public/sign/
 public/daily/
 public/blog/
+
+# Sign data bundle consumed by api/sign.tsx at deploy time.
+lib/sign-data.json
