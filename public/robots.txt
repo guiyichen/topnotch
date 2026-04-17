@@ -1,3 +1,6 @@
 User-agent: *
 Allow: /
+Allow: /sign/
+Allow: /daily/
+
 Sitemap: https://oracleday.xyz/sitemap.xml

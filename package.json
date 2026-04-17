@@ -1,6 +1,11 @@
 {
   "private": true,
+  "scripts": {
+    "build": "node scripts/generate-pages.js",
+    "vercel-build": "node scripts/generate-pages.js"
+  },
   "dependencies": {
+    "@vercel/og": "^0.6.4",
     "stripe": "^14.0.0"
   }
 }

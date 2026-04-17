@@ -806,3 +806,39 @@ body {
         animation: shake 0.25s infinite;
     }
 }
+/* ---------- Sign index footer (crawl entry point) ---------- */
+.sign-index {
+    max-width: 960px;
+    margin: 40px auto 20px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 12px;
+}
+.sign-index-title {
+    font-size: 1.1rem;
+    margin: 0 0 12px;
+    color: #8B4513;
+    text-align: center;
+}
+.sign-index ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 6px;
+}
+.sign-index li a {
+    display: block;
+    text-align: center;
+    padding: 6px 8px;
+    background: #fff;
+    color: #8B1A1A;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    transition: background 0.15s;
+}
+.sign-index li a:hover {
+    background: #ffe8a3;
+}

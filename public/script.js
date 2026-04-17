@@ -103,6 +103,19 @@ const qiangData = [
     { num: "第100签", text: "上上签：佛神灵通与君知，痴人说事转昏迷。老人求得灵签去，不如守旧待时来。", freeExplanation: "此签佛意点化之象，守旧待时之兆。佛已以灵签告知天意，切勿自作聪明。安守当下、静候时机，一切自有天意安排。" }
 ];
 
+// ---------- Analytics helper (GA4) ----------
+function track(eventName, params) {
+    try {
+        if (typeof window.gtag === 'function') {
+            window.gtag('event', eventName, Object.assign({
+                lang: typeof getCurrentLang === 'function' ? getCurrentLang() : 'en'
+            }, params || {}));
+        }
+    } catch (e) {
+        // swallow analytics errors — they must never break the UI
+    }
+}
+
 const qiangTong = document.getElementById('qiang-tong');
 const resultModal = document.getElementById('result-modal');
 const drawnQiang = document.getElementById('drawn-qiang');
@@ -307,6 +320,14 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Page loaded, detecting device...');
     detectMobile();
 
+    // Delegate click tracking for any element with data-track attribute
+    document.addEventListener('click', function(e) {
+        const el = e.target.closest('[data-track]');
+        if (el) {
+            track('affiliate_click', { name: el.getAttribute('data-track'), href: el.getAttribute('href') || '' });
+        }
+    });
+
     // 添加调试信息
     console.log('设备信息:', {
         userAgent: navigator.userAgent,
@@ -339,6 +360,8 @@ async function handlePaymentReturn(sessionId, type, signNum) {
             alert(t('paymentVerifyFailed'));
             return;
         }
+
+        track('payment_success', { type: result.type, sign_num: result.signNum || null });
 
         if (result.type === 'draw') {
             // 付费抽签：减少计数并自动开始抽签
@@ -426,6 +449,7 @@ function closePaywall() {
 }
 
 async function payForDraw() {
+    track('click_pay_for_draw');
     closePaywall();
     try {
         const resp = await fetch('/api/create-checkout', {
@@ -479,6 +503,7 @@ function startDrawing() {
         const signs = getSignData();
         const randomIndex = Math.floor(Math.random() * signs.length);
         const result = signs[randomIndex];
+        track('draw_sign', { sign_num: result.num, sign_index: randomIndex + 1 });
         
         // 4. 显示和播放签支弹出动画
         drawnQiang.style.display = 'block';
@@ -640,6 +665,7 @@ async function fetchAndCacheInterpretation(signNum) {
 }
 
 async function unlockDetailed(signNum) {
+    track('click_unlock', { sign_num: signNum });
     try {
         const resp = await fetch('/api/create-checkout', {
             method: 'POST',
