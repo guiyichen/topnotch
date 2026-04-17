@@ -530,7 +530,7 @@ function renderSignPage(lang: string, n: number, sign: Sign): string {
 
 ${hreflangTags(n)}
 
-    <link rel="stylesheet" href="/style.css?v=4">
+    <link rel="stylesheet" href="/style.css?v=5">
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXX"
             crossorigin="anonymous"></script>

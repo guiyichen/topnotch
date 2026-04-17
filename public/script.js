@@ -747,4 +747,11 @@ function switchLanguage(lang) {
     setLanguage(lang);
     initUI();
     detectMobile();
+    // Re-hydrate the homepage nav + sign index + About/FAQ sections so they
+    // reflect the new language. Without this the user sees the cylinder hint
+    // flip to the new locale but everything below stays stuck on load-time
+    // labels.
+    if (typeof window.hydrateHomepageForLang === 'function') {
+        window.hydrateHomepageForLang(lang);
+    }
 }

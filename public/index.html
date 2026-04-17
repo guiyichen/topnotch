@@ -65,7 +65,7 @@
     <link rel="alternate" hreflang="fr" href="https://oracleday.xyz/?lang=fr">
     <link rel="alternate" hreflang="x-default" href="https://oracleday.xyz/">
 
-    <link rel="stylesheet" href="style.css?v=4">
+    <link rel="stylesheet" href="style.css?v=5">
 
     <!-- Structured Data — WebApplication covers the core product; FAQPage
          captures the high-intent "how does this work" questions to qualify
@@ -190,11 +190,10 @@
         <a id="nav-blog" href="/blog/en/" data-track="nav_blog">📖 <span id="nav-blog-label">Oracle Blog</span></a>
     </nav>
 
-    <!-- Server-rendered content for SEO. Must stay visible (not .sr-only)
-         because Google weighs visible content higher. Copy here is deliberately
-         short and keyword-dense — full translations of these concepts live on
-         per-sign and blog pages. -->
-    <section class="home-about" aria-labelledby="about-heading">
+    <!-- Server-rendered content for SEO. Two language versions (en + zh) are
+         in the DOM at all times; JS toggles visibility via [hidden] attribute
+         based on active locale. Other locales fall back to the English block. -->
+    <section class="home-about" data-lang-for="en" aria-labelledby="about-heading">
         <h2 id="about-heading">What is the Guanyin Oracle?</h2>
         <p>
             The Guanyin Oracle — known in Cantonese as <strong>Kau Chim</strong> and in
@@ -260,6 +259,65 @@
         </details>
     </section>
 
+    <!-- Chinese version — shown when the active locale is zh. -->
+    <section class="home-about" data-lang-for="zh" aria-labelledby="about-heading-zh" hidden>
+        <h2 id="about-heading-zh">观音灵签是什么？</h2>
+        <p>
+            观音灵签（粤语称 <strong>Kau Chim</strong>、普通话称 <strong>观音灵签</strong>）是中国
+            现存最古老的求签占卜方式之一。一千多年来，善信摇动装有 100 支编号签的签筒，
+            请出一支，以签诗的比喻启发对自身处境的思考。
+        </p>
+        <p>
+            有求必应签把完整的 100 支经典观音灵签搬到网上 —— 免费、6 语言
+            （中文、English、日本語、한국어、Español、Français），每签附带
+            <em>事业</em>、<em>姻缘</em>、<em>健康</em>、<em>财运</em>四个维度的详细解读。
+        </p>
+
+        <h2>如何求签</h2>
+        <ol>
+            <li>花 30 秒静心，把想问的事情在心里说清楚。</li>
+            <li>一次只问一个具体问题 —— 问题越清晰，签越灵。</li>
+            <li>点击上方的签筒，或手机摇一摇，开始抽签。</li>
+            <li>把四句签诗读两遍，注意哪一句与你当前的处境最贴合。</li>
+            <li>尊重第一支签 —— 传统上重抽并不能换来新答案，而是在拒绝第一次的答案。</li>
+        </ol>
+        <p>
+            想了解更多？
+            <a href="/blog/zh/qiuqian-qian-yao-zuo-shenme.html">阅读求签前的准备指南 →</a>
+        </p>
+
+        <h2>常见问题</h2>
+        <details>
+            <summary>有求必应签免费吗？</summary>
+            <p>
+                免费。每天 3 次免费抽签覆盖全部 100 签、6 语言。付费项目仅有
+                每签 $1.99 的四维度详细解读，完全可选。
+            </p>
+        </details>
+        <details>
+            <summary>观音灵签真的准吗？</summary>
+            <p>
+                观音灵签并不是对未来具体事件的预言。每一支签是一面诗意的镜子，
+                映照出问题中你可能忽略的一面。它的价值在于：逼你停下来、把问题说清楚、
+                并坦然接受一个未必如你所愿的答案。
+            </p>
+        </details>
+        <details>
+            <summary>抽到不喜欢的签可以重抽吗？</summary>
+            <p>
+                传统上不可以。第一支签就是答案，重抽更接近于拒绝答案、而不是重新提问。
+                若是换了完全不同的问题或情境，可以另行抽一支。
+            </p>
+        </details>
+        <details>
+            <summary>四句签诗到底怎么读？</summary>
+            <p>
+                每支签都配一首古典汉诗，用龙、月、森林等自然意象作比喻。带着你当下的
+                问题去读，哪一句最让你心头一动，那就是签给你的答案。
+            </p>
+        </details>
+    </section>
+
     <!-- SEO internal link hub: crawl entry point for all 100 sign pages.
          Visually muted but present for search engines and users who want to
          browse a specific sign directly. Generated language links are
@@ -272,45 +330,69 @@
         </ul>
     </nav>
 
-    <script src="i18n.js?v=4"></script>
-    <script src="i18n-extra.js?v=4"></script>
-    <script src="script.js?v=4"></script>
+    <script src="i18n.js?v=5"></script>
+    <script src="i18n-extra.js?v=5"></script>
+    <script src="script.js?v=5"></script>
     <script>
-        // Populate the sign index + primary nav once i18n is loaded.
-        // Using the current language, we link every sign to its static SEO
-        // page and localize the Daily / Blog nav entries.
+        // Localize the homepage nav, sign index, and visible About/FAQ block
+        // based on the active locale. Exposed on window so switchLanguage()
+        // (in script.js) can re-run it when the user picks a different lang
+        // from the dropdown.
         (function () {
-            if (typeof I18N === 'undefined') return;
-            var lang = (typeof getCurrentLang === 'function') ? getCurrentLang() : 'en';
-            var pack = I18N[lang] || I18N.en;
-
-            // Sign index list
-            var list = document.getElementById('sign-index-list');
-            if (list) {
-                var signs = (pack && pack.signs) || [];
-                var html = '';
-                for (var i = 0; i < signs.length; i++) {
-                    var n = i + 1;
-                    var label = signs[i] && signs[i].num ? signs[i].num : ('#' + n);
-                    html += '<li><a href="/sign/' + lang + '/' + n + '.html">' + label + '</a></li>';
-                }
-                list.innerHTML = html;
-            }
-
-            // Primary nav — localize hrefs + labels.
-            // Blog currently only exists for en/zh, so fall back to en for
-            // locales that don't have translated posts yet.
-            var BLOG_LANGS = { en: 1, zh: 1 };
-            var dailyEl = document.getElementById('nav-daily');
-            var dailyLabelEl = document.getElementById('nav-daily-label');
-            var blogEl = document.getElementById('nav-blog');
-            var blogLabelEl = document.getElementById('nav-blog-label');
             var DAILY_LABELS = { en: "Today's Oracle", zh: '今日一签', ja: '今日のおみくじ', ko: '오늘의 첨', es: 'Oráculo de hoy', fr: 'Oracle du jour' };
             var BLOG_LABELS = { en: 'Oracle Blog', zh: '签文博客', ja: 'ブログ', ko: '블로그', es: 'Blog', fr: 'Blog' };
-            if (dailyEl) dailyEl.href = '/daily/' + lang + '.html';
-            if (dailyLabelEl) dailyLabelEl.textContent = DAILY_LABELS[lang] || DAILY_LABELS.en;
-            if (blogEl) blogEl.href = '/blog/' + (BLOG_LANGS[lang] ? lang : 'en') + '/';
-            if (blogLabelEl) blogLabelEl.textContent = BLOG_LABELS[lang] || BLOG_LABELS.en;
+            // Blog currently only exists for en/zh — other locales fall back
+            // to the English index to keep the link non-404.
+            var BLOG_LANGS = { en: 1, zh: 1 };
+            // Same for the visible About/FAQ SEO block — we only have en + zh
+            // translated. Any other active locale shows the English version.
+            var ABOUT_LANGS = { en: 1, zh: 1 };
+
+            function hydrate(lang) {
+                if (typeof I18N === 'undefined') return;
+                lang = lang || (typeof getCurrentLang === 'function' ? getCurrentLang() : 'en');
+                var pack = I18N[lang] || I18N.en;
+
+                // Sign index: relink every entry to the matching locale.
+                var list = document.getElementById('sign-index-list');
+                if (list) {
+                    var signs = (pack && pack.signs) || [];
+                    var html = '';
+                    for (var i = 0; i < signs.length; i++) {
+                        var n = i + 1;
+                        var label = signs[i] && signs[i].num ? signs[i].num : ('#' + n);
+                        html += '<li><a href="/sign/' + lang + '/' + n + '.html">' + label + '</a></li>';
+                    }
+                    list.innerHTML = html;
+                }
+
+                // Primary nav: localize hrefs + labels.
+                var dailyEl = document.getElementById('nav-daily');
+                var dailyLabelEl = document.getElementById('nav-daily-label');
+                var blogEl = document.getElementById('nav-blog');
+                var blogLabelEl = document.getElementById('nav-blog-label');
+                if (dailyEl) dailyEl.href = '/daily/' + lang + '.html';
+                if (dailyLabelEl) dailyLabelEl.textContent = DAILY_LABELS[lang] || DAILY_LABELS.en;
+                if (blogEl) blogEl.href = '/blog/' + (BLOG_LANGS[lang] ? lang : 'en') + '/';
+                if (blogLabelEl) blogLabelEl.textContent = BLOG_LABELS[lang] || BLOG_LABELS.en;
+
+                // About/FAQ sections: show the one matching the active lang,
+                // hide the others. Fall back to English when a translation
+                // doesn't exist for this locale.
+                var visibleLang = ABOUT_LANGS[lang] ? lang : 'en';
+                var blocks = document.querySelectorAll('.home-about[data-lang-for]');
+                for (var j = 0; j < blocks.length; j++) {
+                    blocks[j].hidden = blocks[j].getAttribute('data-lang-for') !== visibleLang;
+                }
+            }
+
+            // Expose so switchLanguage() in script.js can call this again on
+            // every dropdown change.
+            window.hydrateHomepageForLang = hydrate;
+
+            // Initial hydrate on load. i18n.js has already detected the
+            // active language by the time this script tag runs.
+            hydrate();
         })();
     </script>
 </body>

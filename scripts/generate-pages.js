@@ -720,7 +720,7 @@ function renderSignPage(lang, n, sign) {
     <!-- hreflang -->
 ${hreflangTags(n)}
 
-    <link rel="stylesheet" href="/style.css?v=4">
+    <link rel="stylesheet" href="/style.css?v=5">
 
     <!-- AdSense loader (replace ca-pub-XXXXXXXXXX after approval) -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXX"
@@ -883,7 +883,7 @@ function renderDailyPage(lang) {
     <meta name="twitter:card" content="summary_large_image">
 ${LANGS.map((l) => `    <link rel="alternate" hreflang="${l}" href="${SITE_URL}/daily/${l}.html">`).join('\n')}
     <link rel="alternate" hreflang="x-default" href="${SITE_URL}/daily/en.html">
-    <link rel="stylesheet" href="/style.css?v=4">
+    <link rel="stylesheet" href="/style.css?v=5">
     <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
 ${analyticsHead()}
     <script type="application/ld+json">${JSON.stringify({
@@ -1192,7 +1192,7 @@ function renderBlogPost(lang, slug, post) {
     <meta property="og:image" content="${ogImage}">
     <meta property="og:locale" content="${L.ogLocale}">
     <meta name="twitter:card" content="summary_large_image">
-    <link rel="stylesheet" href="/style.css?v=4">
+    <link rel="stylesheet" href="/style.css?v=5">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXX"
             crossorigin="anonymous"></script>
     <style>
@@ -1262,7 +1262,7 @@ function renderBlogIndex(lang, posts) {
     <title>${escapeHtml(indexTitle)} | ${L.siteName}</title>
     <meta name="description" content="${escapeHtml(indexTitle)}">
     <link rel="canonical" href="${url}">
-    <link rel="stylesheet" href="/style.css?v=4">
+    <link rel="stylesheet" href="/style.css?v=5">
     <style>
         body { background:#f7eed6; color:#2b1a0a; font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans",sans-serif; margin:0; }
         .blog-index { max-width: 720px; margin: 0 auto; padding: 40px 20px; }
