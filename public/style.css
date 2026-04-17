@@ -123,15 +123,20 @@ body {
     background: #ffffff;
     min-height: 100vh;
     overflow-x: hidden;
+    /* Column layout so the bamboo cylinder, about section, sign index, etc.
+       stack vertically. Horizontal centering stays via align-items:center. */
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    padding: 40px 16px 0;
+    gap: 32px;
 }
 
 .qiang-container {
     position: relative;
     width: 300px; /* 根据图片大小调整 */
     text-align: center;
+    flex-shrink: 0;
 }
 
 /* 手机端适配 */
@@ -808,11 +813,13 @@ body {
 }
 /* ---------- Sign index footer (crawl entry point) ---------- */
 .sign-index {
+    width: 100%;
     max-width: 960px;
-    margin: 40px auto 20px;
+    margin: 0;
     padding: 20px;
     background: rgba(255, 255, 255, 0.7);
     border-radius: 12px;
+    box-sizing: border-box;
 }
 .sign-index-title {
     font-size: 1.1rem;
@@ -849,9 +856,11 @@ body {
     justify-content: center;
     gap: 12px;
     flex-wrap: wrap;
-    margin: 24px auto 0;
+    margin: 0;
     padding: 0 16px;
+    width: 100%;
     max-width: 960px;
+    box-sizing: border-box;
 }
 .primary-nav a {
     display: inline-flex;
@@ -874,13 +883,15 @@ body {
 
 /* ---------- Homepage About/FAQ content block (SEO) ---------- */
 .home-about {
+    width: 100%;
     max-width: 720px;
-    margin: 40px auto 0;
+    margin: 0;
     padding: 24px;
     background: rgba(255, 255, 255, 0.75);
     border-radius: 12px;
     color: #2b1a0a;
     line-height: 1.7;
+    box-sizing: border-box;
 }
 .home-about h2 {
     color: #8B1A1A;
