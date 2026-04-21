@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>I Ching Online · Three-Coin Casting | 周易起卦</title>
+<meta name="description" content="Free online I Ching divination. Cast three coins six times to generate your hexagram and receive a reading from the 64 classical hexagrams.">
+<link rel="canonical" href="https://oracleday.xyz/yijing.html">
+<link rel="alternate" hreflang="zh" href="https://oracleday.xyz/yijing.html?lang=zh">
+<link rel="alternate" hreflang="en" href="https://oracleday.xyz/yijing.html">
+<link rel="alternate" hreflang="x-default" href="https://oracleday.xyz/yijing.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="I Ching Online · Three-Coin Casting">
+<meta property="og:description" content="Cast three coins six times to generate your hexagram.">
+<meta property="og:url" content="https://oracleday.xyz/yijing.html">
+<meta property="og:image" content="https://oracleday.xyz/qtong.png">
+<link rel="stylesheet" href="style.css?v=6">
+</head>
+<body class="yijing-page yijing-cast">
+
+<select id="lang-select" class="lang-select" onchange="window.location.search='?lang='+this.value" aria-label="Select language">
+  <option value="en">English</option>
+  <option value="zh">中文</option>
+</select>
+
+<main class="yijing-main">
+  <h1 id="page-title">I Ching · Three-Coin Casting</h1>
+  <p id="page-intro">Focus on a question, then toss three coins six times. Each toss becomes one line of your hexagram, from bottom to top.</p>
+
+  <section class="cast-area" aria-live="polite">
+    <div class="cast-coins" id="cast-coins">
+      <span class="coin" data-coin="0">?</span>
+      <span class="coin" data-coin="1">?</span>
+      <span class="coin" data-coin="2">?</span>
+    </div>
+
+    <div class="cast-progress">
+      <span id="cast-step-label">Toss 1 of 6</span>
+      <div class="cast-lines" id="cast-lines" aria-label="Building hexagram">
+        <!-- Filled bottom-up as tosses happen -->
+      </div>
+    </div>
+
+    <button id="cast-btn" class="unlock-btn cast-btn">🪙 <span id="cast-btn-label">Cast the coins</span></button>
+
+    <form id="question-form" class="cast-question">
+      <label for="cast-question"><span id="cast-question-label">Your question (optional)</span></label>
+      <textarea id="cast-question" maxlength="300" rows="2" placeholder="What should I focus on this week?"></textarea>
+    </form>
+  </section>
+
+  <nav class="hex-index" aria-label="All 64 hexagrams">
+    <h2 id="index-title">Browse all 64 hexagrams</h2>
+    <ul id="hex-index-list">
+      <!-- Filled by yijing.js after I18N + data load -->
+    </ul>
+  </nav>
+</main>
+
+<script src="i18n-pages.js?v=1"></script>
+<script src="site-nav.js?v=2"></script>
+<script src="i18n.js?v=6"></script>
+<script src="i18n-extra.js?v=6"></script>
+<script src="i18n-hub.js?v=1"></script>
+<script src="yijing.js?v=1"></script>
+</body>
+</html>

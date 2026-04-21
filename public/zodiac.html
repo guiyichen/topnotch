@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zodiac & Sheng Xiao Horoscopes | 星座生肖运势</title>
+<meta name="description" content="Free daily and weekly horoscopes for 12 Western zodiac signs and 12 Chinese sheng xiao signs. Career, love, health, wealth.">
+<link rel="canonical" href="https://oracleday.xyz/zodiac.html">
+<link rel="alternate" hreflang="en" href="https://oracleday.xyz/zodiac.html">
+<link rel="alternate" hreflang="zh" href="https://oracleday.xyz/zodiac.html?lang=zh">
+<link rel="alternate" hreflang="ja" href="https://oracleday.xyz/zodiac.html?lang=ja">
+<link rel="alternate" hreflang="ko" href="https://oracleday.xyz/zodiac.html?lang=ko">
+<link rel="alternate" hreflang="es" href="https://oracleday.xyz/zodiac.html?lang=es">
+<link rel="alternate" hreflang="fr" href="https://oracleday.xyz/zodiac.html?lang=fr">
+<link rel="alternate" hreflang="x-default" href="https://oracleday.xyz/zodiac.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Zodiac & Sheng Xiao Horoscopes">
+<meta property="og:description" content="Daily and weekly horoscopes for 12 Western and 12 Chinese signs.">
+<meta property="og:url" content="https://oracleday.xyz/zodiac.html">
+<meta property="og:image" content="https://oracleday.xyz/qtong.png">
+<link rel="stylesheet" href="style.css?v=6">
+</head>
+<body class="zodiac-page zodiac-landing">
+
+<select id="lang-select" class="lang-select" onchange="window.location.search='?lang='+this.value" aria-label="Select language">
+  <option value="en">English</option>
+  <option value="zh">中文</option>
+</select>
+
+<main class="zodiac-landing-main">
+  <h1 id="page-title">Zodiac & Sheng Xiao Horoscopes</h1>
+  <p id="page-intro">Pick your sign to see today's forecast and this week's outlook.</p>
+
+  <section class="zodiac-picker">
+    <h2 id="group-western">Western Zodiac</h2>
+    <ul class="zodiac-list" id="list-western"></ul>
+
+    <h2 id="group-chinese">Chinese Sheng Xiao</h2>
+    <ul class="zodiac-list" id="list-chinese"></ul>
+  </section>
+</main>
+
+<script src="i18n-pages.js?v=1"></script>
+<script src="site-nav.js?v=2"></script>
+<script src="zodiac-landing.js?v=2"></script>
+</body>
+</html>

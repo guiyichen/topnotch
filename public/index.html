@@ -65,7 +65,7 @@
     <link rel="alternate" hreflang="fr" href="https://oracleday.xyz/?lang=fr">
     <link rel="alternate" hreflang="x-default" href="https://oracleday.xyz/">
 
-    <link rel="stylesheet" href="style.css?v=5">
+    <link rel="stylesheet" href="style.css?v=6">
 
     <!-- Structured Data — WebApplication covers the core product; FAQPage
          captures the high-intent "how does this work" questions to qualify
@@ -189,6 +189,58 @@
         <a id="nav-daily" href="/daily/en.html" data-track="nav_daily">🌅 <span id="nav-daily-label">Today's Oracle</span></a>
         <a id="nav-blog" href="/blog/en/" data-track="nav_blog">📖 <span id="nav-blog-label">Oracle Blog</span></a>
     </nav>
+
+    <!-- Fortune Hub: 5-card grid linking out to each 命理 category.
+         Labels are localized via i18n-hub.js on load + language switch. -->
+    <section class="fortune-hub" aria-labelledby="hub-heading">
+        <h2 id="hub-heading" class="hub-title" data-i18n-hub="title">Fortune Services</h2>
+        <p class="hub-subtitle" data-i18n-hub="subtitle">Beyond a single draw — four tools to help you see clearly and move forward.</p>
+        <ul class="hub-grid">
+            <li class="hub-card" data-category="sign">
+                <a href="/" data-track="hub_sign">
+                    <span class="hub-icon" aria-hidden="true">🎋</span>
+                    <span class="hub-card-title" data-i18n-hub="cards.sign.title">Guanyin Oracle</span>
+                    <span class="hub-card-desc" data-i18n-hub="cards.sign.desc">100 classic fortune sticks</span>
+                </a>
+            </li>
+            <li class="hub-card" data-category="yijing">
+                <a href="/yijing.html" data-track="hub_yijing">
+                    <span class="hub-icon" aria-hidden="true">☯</span>
+                    <span class="hub-card-title" data-i18n-hub="cards.yijing.title">I Ching</span>
+                    <span class="hub-card-desc" data-i18n-hub="cards.yijing.desc">Three coins, six-line hexagram</span>
+                </a>
+            </li>
+            <li class="hub-card" data-category="zodiac">
+                <a href="/zodiac.html" data-track="hub_zodiac">
+                    <span class="hub-icon" aria-hidden="true">♈</span>
+                    <span class="hub-card-title" data-i18n-hub="cards.zodiac.title">Zodiac & Sheng Xiao</span>
+                    <span class="hub-card-desc" data-i18n-hub="cards.zodiac.desc">Daily forecast & yearly outlook</span>
+                </a>
+            </li>
+            <li class="hub-card" data-category="bazi">
+                <a href="/bazi.html" data-track="hub_bazi">
+                    <span class="hub-icon" aria-hidden="true">🀄</span>
+                    <span class="hub-card-title" data-i18n-hub="cards.bazi.title">BaZi (Four Pillars)</span>
+                    <span class="hub-card-desc" data-i18n-hub="cards.bazi.desc">AI-powered destiny reading</span>
+                </a>
+            </li>
+            <li class="hub-card" data-category="tarot">
+                <a href="/tarot.html" data-track="hub_tarot">
+                    <span class="hub-icon" aria-hidden="true">🔮</span>
+                    <span class="hub-card-title" data-i18n-hub="cards.tarot.title">Tarot</span>
+                    <span class="hub-card-desc" data-i18n-hub="cards.tarot.desc">78-card spreads with AI reading</span>
+                </a>
+            </li>
+            <li class="hub-card" data-category="huangli">
+                <a href="/huangli.html" data-track="hub_huangli">
+                    <span class="hub-icon" aria-hidden="true">📅</span>
+                    <span class="hub-card-title" data-i18n-hub="cards.huangli.title">Huang Li · Almanac</span>
+                    <span class="hub-card-desc" data-i18n-hub="cards.huangli.desc">Favorable days & AI date picker</span>
+                </a>
+            </li>
+        </ul>
+        <p class="hub-disclaimer" data-i18n-hub="disclaimer">For entertainment purposes only.</p>
+    </section>
 
     <!-- Server-rendered content for SEO. Two language versions (en + zh) are
          in the DOM at all times; JS toggles visibility via [hidden] attribute
@@ -330,9 +382,12 @@
         </ul>
     </nav>
 
-    <script src="i18n.js?v=5"></script>
-    <script src="i18n-extra.js?v=5"></script>
-    <script src="script.js?v=5"></script>
+    <script src="i18n-pages.js?v=1"></script>
+    <script src="site-nav.js?v=2"></script>
+    <script src="i18n.js?v=6"></script>
+    <script src="i18n-extra.js?v=6"></script>
+    <script src="i18n-hub.js?v=1"></script>
+    <script src="script.js?v=6"></script>
     <script>
         // Localize the homepage nav, sign index, and visible About/FAQ block
         // based on the active locale. Exposed on window so switchLanguage()
@@ -375,6 +430,30 @@
                 if (dailyLabelEl) dailyLabelEl.textContent = DAILY_LABELS[lang] || DAILY_LABELS.en;
                 if (blogEl) blogEl.href = '/blog/' + (BLOG_LANGS[lang] ? lang : 'en') + '/';
                 if (blogLabelEl) blogLabelEl.textContent = BLOG_LABELS[lang] || BLOG_LABELS.en;
+
+                // Fortune Hub: make live card URLs language-aware.
+                var yijingLink = document.querySelector('.hub-card[data-category="yijing"] > a');
+                if (yijingLink) yijingLink.href = '/yijing.html?lang=' + lang;
+                var zodiacLink = document.querySelector('.hub-card[data-category="zodiac"] > a');
+                if (zodiacLink) zodiacLink.href = '/zodiac.html?lang=' + lang;
+                var baziLink = document.querySelector('.hub-card[data-category="bazi"] > a');
+                if (baziLink) baziLink.href = '/bazi.html?lang=' + lang;
+                var tarotLink = document.querySelector('.hub-card[data-category="tarot"] > a');
+                if (tarotLink) tarotLink.href = '/tarot.html?lang=' + lang;
+                var huangliLink = document.querySelector('.hub-card[data-category="huangli"] > a');
+                if (huangliLink) huangliLink.href = '/huangli.html?lang=' + lang;
+
+                // Fortune Hub: apply hub strings via data-i18n-hub="dot.path".
+                var hub = pack && pack.hub;
+                if (hub) {
+                    var hubEls = document.querySelectorAll('[data-i18n-hub]');
+                    for (var k = 0; k < hubEls.length; k++) {
+                        var path = hubEls[k].getAttribute('data-i18n-hub').split('.');
+                        var v = hub;
+                        for (var p = 0; p < path.length && v != null; p++) v = v[path[p]];
+                        if (typeof v === 'string') hubEls[k].textContent = v;
+                    }
+                }
 
                 // About/FAQ sections: show the one matching the active lang,
                 // hide the others. Fall back to English when a translation

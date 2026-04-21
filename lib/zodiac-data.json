@@ -1,0 +1,372 @@
+{
+  "_meta": {
+    "description": "12 Western zodiac signs + 12 Chinese sheng xiao signs with phrase dictionaries for deterministic daily/weekly forecasts. Daily forecast = pick phrase by hash(date + sign + category) % N. No DB, no Cron required. Translation quality: ja/ko/es/fr copy is LLM-assisted and should be reviewed by native speakers before heavy paid marketing.",
+    "scoreBuckets": [1, 2, 3, 4, 5]
+  },
+  "western": [
+    { "slug": "aries",       "glyph": "♈", "element": "fire",  "dates_en": "Mar 21 – Apr 19", "dates_zh": "3月21日 – 4月19日", "dates_ja": "3月21日 – 4月19日", "dates_ko": "3월 21일 – 4월 19일", "dates_es": "21 Mar – 19 Abr", "dates_fr": "21 Mar – 19 Avr", "zh": { "name": "白羊座" }, "en": { "name": "Aries" },       "ja": { "name": "牡羊座" }, "ko": { "name": "양자리" },    "es": { "name": "Aries" },     "fr": { "name": "Bélier" } },
+    { "slug": "taurus",      "glyph": "♉", "element": "earth", "dates_en": "Apr 20 – May 20", "dates_zh": "4月20日 – 5月20日", "dates_ja": "4月20日 – 5月20日", "dates_ko": "4월 20일 – 5월 20일", "dates_es": "20 Abr – 20 May", "dates_fr": "20 Avr – 20 Mai", "zh": { "name": "金牛座" }, "en": { "name": "Taurus" },      "ja": { "name": "牡牛座" }, "ko": { "name": "황소자리" }, "es": { "name": "Tauro" },     "fr": { "name": "Taureau" } },
+    { "slug": "gemini",      "glyph": "♊", "element": "air",   "dates_en": "May 21 – Jun 20", "dates_zh": "5月21日 – 6月20日", "dates_ja": "5月21日 – 6月20日", "dates_ko": "5월 21일 – 6월 20일", "dates_es": "21 May – 20 Jun", "dates_fr": "21 Mai – 20 Juin", "zh": { "name": "双子座" }, "en": { "name": "Gemini" },      "ja": { "name": "双子座" }, "ko": { "name": "쌍둥이자리" }, "es": { "name": "Géminis" },   "fr": { "name": "Gémeaux" } },
+    { "slug": "cancer",      "glyph": "♋", "element": "water", "dates_en": "Jun 21 – Jul 22", "dates_zh": "6月21日 – 7月22日", "dates_ja": "6月21日 – 7月22日", "dates_ko": "6월 21일 – 7월 22일", "dates_es": "21 Jun – 22 Jul", "dates_fr": "21 Juin – 22 Juil", "zh": { "name": "巨蟹座" }, "en": { "name": "Cancer" },      "ja": { "name": "蟹座" },   "ko": { "name": "게자리" },    "es": { "name": "Cáncer" },    "fr": { "name": "Cancer" } },
+    { "slug": "leo",         "glyph": "♌", "element": "fire",  "dates_en": "Jul 23 – Aug 22", "dates_zh": "7月23日 – 8月22日", "dates_ja": "7月23日 – 8月22日", "dates_ko": "7월 23일 – 8월 22일", "dates_es": "23 Jul – 22 Ago", "dates_fr": "23 Juil – 22 Aoû", "zh": { "name": "狮子座" }, "en": { "name": "Leo" },         "ja": { "name": "獅子座" }, "ko": { "name": "사자자리" }, "es": { "name": "Leo" },       "fr": { "name": "Lion" } },
+    { "slug": "virgo",       "glyph": "♍", "element": "earth", "dates_en": "Aug 23 – Sep 22", "dates_zh": "8月23日 – 9月22日", "dates_ja": "8月23日 – 9月22日", "dates_ko": "8월 23일 – 9월 22일", "dates_es": "23 Ago – 22 Sep", "dates_fr": "23 Aoû – 22 Sep", "zh": { "name": "处女座" }, "en": { "name": "Virgo" },       "ja": { "name": "乙女座" }, "ko": { "name": "처녀자리" }, "es": { "name": "Virgo" },     "fr": { "name": "Vierge" } },
+    { "slug": "libra",       "glyph": "♎", "element": "air",   "dates_en": "Sep 23 – Oct 22", "dates_zh": "9月23日 – 10月22日","dates_ja": "9月23日 – 10月22日","dates_ko": "9월 23일 – 10월 22일","dates_es": "23 Sep – 22 Oct", "dates_fr": "23 Sep – 22 Oct", "zh": { "name": "天秤座" }, "en": { "name": "Libra" },       "ja": { "name": "天秤座" }, "ko": { "name": "천칭자리" }, "es": { "name": "Libra" },     "fr": { "name": "Balance" } },
+    { "slug": "scorpio",     "glyph": "♏", "element": "water", "dates_en": "Oct 23 – Nov 21", "dates_zh": "10月23日 – 11月21日","dates_ja": "10月23日 – 11月21日","dates_ko": "10월 23일 – 11월 21일","dates_es": "23 Oct – 21 Nov", "dates_fr": "23 Oct – 21 Nov", "zh": { "name": "天蝎座" }, "en": { "name": "Scorpio" },     "ja": { "name": "蠍座" },   "ko": { "name": "전갈자리" }, "es": { "name": "Escorpio" },  "fr": { "name": "Scorpion" } },
+    { "slug": "sagittarius", "glyph": "♐", "element": "fire",  "dates_en": "Nov 22 – Dec 21", "dates_zh": "11月22日 – 12月21日","dates_ja": "11月22日 – 12月21日","dates_ko": "11월 22일 – 12월 21일","dates_es": "22 Nov – 21 Dic", "dates_fr": "22 Nov – 21 Déc", "zh": { "name": "射手座" }, "en": { "name": "Sagittarius" }, "ja": { "name": "射手座" }, "ko": { "name": "사수자리" }, "es": { "name": "Sagitario" }, "fr": { "name": "Sagittaire" } },
+    { "slug": "capricorn",   "glyph": "♑", "element": "earth", "dates_en": "Dec 22 – Jan 19", "dates_zh": "12月22日 – 1月19日","dates_ja": "12月22日 – 1月19日","dates_ko": "12월 22일 – 1월 19일","dates_es": "22 Dic – 19 Ene", "dates_fr": "22 Déc – 19 Jan", "zh": { "name": "摩羯座" }, "en": { "name": "Capricorn" },   "ja": { "name": "山羊座" }, "ko": { "name": "염소자리" }, "es": { "name": "Capricornio" },"fr": { "name": "Capricorne" } },
+    { "slug": "aquarius",    "glyph": "♒", "element": "air",   "dates_en": "Jan 20 – Feb 18", "dates_zh": "1月20日 – 2月18日","dates_ja": "1月20日 – 2月18日","dates_ko": "1월 20일 – 2월 18일","dates_es": "20 Ene – 18 Feb", "dates_fr": "20 Jan – 18 Fév", "zh": { "name": "水瓶座" }, "en": { "name": "Aquarius" },    "ja": { "name": "水瓶座" }, "ko": { "name": "물병자리" }, "es": { "name": "Acuario" },   "fr": { "name": "Verseau" } },
+    { "slug": "pisces",      "glyph": "♓", "element": "water", "dates_en": "Feb 19 – Mar 20", "dates_zh": "2月19日 – 3月20日","dates_ja": "2月19日 – 3月20日","dates_ko": "2월 19일 – 3월 20일","dates_es": "19 Feb – 20 Mar", "dates_fr": "19 Fév – 20 Mar", "zh": { "name": "双鱼座" }, "en": { "name": "Pisces" },      "ja": { "name": "魚座" },   "ko": { "name": "물고기자리" },"es": { "name": "Piscis" },    "fr": { "name": "Poissons" } }
+  ],
+  "chinese": [
+    { "slug": "rat",     "glyph": "🐀", "zh": { "name": "鼠" }, "en": { "name": "Rat" },     "ja": { "name": "子（ねずみ）" }, "ko": { "name": "쥐" },     "es": { "name": "Rata" },      "fr": { "name": "Rat" } },
+    { "slug": "ox",      "glyph": "🐂", "zh": { "name": "牛" }, "en": { "name": "Ox" },      "ja": { "name": "丑（うし）" },   "ko": { "name": "소" },     "es": { "name": "Buey" },      "fr": { "name": "Bœuf" } },
+    { "slug": "tiger",   "glyph": "🐅", "zh": { "name": "虎" }, "en": { "name": "Tiger" },   "ja": { "name": "寅（とら）" },   "ko": { "name": "호랑이" }, "es": { "name": "Tigre" },     "fr": { "name": "Tigre" } },
+    { "slug": "rabbit",  "glyph": "🐇", "zh": { "name": "兔" }, "en": { "name": "Rabbit" },  "ja": { "name": "卯（うさぎ）" }, "ko": { "name": "토끼" },   "es": { "name": "Conejo" },    "fr": { "name": "Lapin" } },
+    { "slug": "dragon",  "glyph": "🐉", "zh": { "name": "龙" }, "en": { "name": "Dragon" },  "ja": { "name": "辰（たつ）" },   "ko": { "name": "용" },     "es": { "name": "Dragón" },    "fr": { "name": "Dragon" } },
+    { "slug": "snake",   "glyph": "🐍", "zh": { "name": "蛇" }, "en": { "name": "Snake" },   "ja": { "name": "巳（へび）" },   "ko": { "name": "뱀" },     "es": { "name": "Serpiente" }, "fr": { "name": "Serpent" } },
+    { "slug": "horse",   "glyph": "🐎", "zh": { "name": "马" }, "en": { "name": "Horse" },   "ja": { "name": "午（うま）" },   "ko": { "name": "말" },     "es": { "name": "Caballo" },   "fr": { "name": "Cheval" } },
+    { "slug": "goat",    "glyph": "🐐", "zh": { "name": "羊" }, "en": { "name": "Goat" },    "ja": { "name": "未（ひつじ）" }, "ko": { "name": "양" },     "es": { "name": "Cabra" },     "fr": { "name": "Chèvre" } },
+    { "slug": "monkey",  "glyph": "🐒", "zh": { "name": "猴" }, "en": { "name": "Monkey" },  "ja": { "name": "申（さる）" },   "ko": { "name": "원숭이" }, "es": { "name": "Mono" },      "fr": { "name": "Singe" } },
+    { "slug": "rooster", "glyph": "🐓", "zh": { "name": "鸡" }, "en": { "name": "Rooster" }, "ja": { "name": "酉（とり）" },   "ko": { "name": "닭" },     "es": { "name": "Gallo" },     "fr": { "name": "Coq" } },
+    { "slug": "dog",     "glyph": "🐕", "zh": { "name": "狗" }, "en": { "name": "Dog" },     "ja": { "name": "戌（いぬ）" },   "ko": { "name": "개" },     "es": { "name": "Perro" },     "fr": { "name": "Chien" } },
+    { "slug": "pig",     "glyph": "🐖", "zh": { "name": "猪" }, "en": { "name": "Pig" },     "ja": { "name": "亥（いのしし）" },"ko": { "name": "돼지" },   "es": { "name": "Cerdo" },     "fr": { "name": "Cochon" } }
+  ],
+  "phrases": {
+    "zh": {
+      "overall": [
+        "今天整体运势平稳，适合按部就班处理既定计划。",
+        "今日能量充沛，适合主动出击推进重要事项。",
+        "今天宜静不宜动，多思考少行动有助理清方向。",
+        "今日贵人运不错，不妨开口寻求支持。",
+        "今天容易遇到小波折，保持耐心即可化解。",
+        "今日适合收尾而非开新局，把手头事做干净。",
+        "今天情绪略有起伏，先安顿自己再处理他人。",
+        "今日直觉敏锐，第一反应往往是对的。",
+        "今天宜低调，避免与强势之人正面冲突。",
+        "今日节奏明快，短促而有效的沟通最见效。"
+      ],
+      "career": [
+        "工作中会有一个小机会，留意再平常不过的对话。",
+        "同事协作顺畅，但别揽下本不属于你的活。",
+        "注意邮件与合同细节，小失误今天会被放大。",
+        "适合提出一个筹备已久的方案，时机刚好。",
+        "远程沟通优于当面讨论，信息比情绪重要。",
+        "上司今天对数据敏感，汇报时用数字说话。",
+        "避免在今日开启多线任务，专注单点突破。",
+        "若有决策犹豫，今天推迟到明天再定更稳妥。"
+      ],
+      "love": [
+        "伴侣之间的小摩擦源于沟通节奏不同，慢一点说。",
+        "单身者今日桃花来自日常圈子，多看看身边熟人。",
+        "今日适合把早就该聊的事摊开聊，直接但温和。",
+        "别急着定义关系，让对方有说话的空间。",
+        "一条简单的关心信息，比宏大的表白更打动人。",
+        "约会选安静场合，彼此倾听比热闹更重要。",
+        "旧人可能有联系，回应前先问自己是否真想回应。",
+        "照顾好情绪再谈感情，今天你更需要被自己理解。"
+      ],
+      "health": [
+        "颈肩酸痛提示姿势问题，今天提醒自己多起身活动。",
+        "睡眠质量比时长重要，临睡前远离屏幕半小时。",
+        "今日肠胃略敏感，饮食清淡少冰少辣。",
+        "一次二十分钟的快走能显著改善今日精力。",
+        "多喝温水，少摄入咖啡因，情绪会更稳。",
+        "眼睛需要休息，每工作 45 分钟远眺 1 分钟。",
+        "今日情绪易波动，深呼吸 5 次再做回应。",
+        "适合进行柔和运动，瑜伽或伸展都是好选择。"
+      ],
+      "wealth": [
+        "今日进财稳定，但别轻易把现金投入新项目。",
+        "小额消费容易冲动，购物前加入购物车冷静一小时。",
+        "可以处理搁置的账单或订阅，减少隐性开支。",
+        "投资决策宜延后 24 小时，让情绪沉淀。",
+        "正财运强于偏财，专注主业回报更可观。",
+        "意外支出概率上升，预留一笔应急金。",
+        "适合谈判已有协议，不适合发起全新谈判。",
+        "今日送出的小礼物会在未来带来意想不到的回报。"
+      ],
+      "lucky_color": ["赤红", "靛蓝", "金黄", "墨绿", "雪白", "藕粉", "黑", "橄榄绿", "银灰", "宝蓝"],
+      "lucky_number": ["3", "5", "7", "8", "9", "12", "18", "21", "27", "36"]
+    },
+    "en": {
+      "overall": [
+        "A steady day overall — follow your existing plan rather than improvising.",
+        "Your energy is high today. Take the initiative on something that matters.",
+        "Think more, move less. Clarity will arrive before action needs to.",
+        "Helpful people are around today. Don't be shy about asking.",
+        "Small bumps are likely but minor; patience dissolves them.",
+        "Better for closing loops than opening new ones. Finish what's halfway.",
+        "Mood swings today. Settle yourself before you respond to others.",
+        "Your intuition is sharp. First instincts are usually correct.",
+        "Stay low-key today; avoid head-on conflict with dominant personalities.",
+        "Pace is brisk — short, targeted messages beat long ones."
+      ],
+      "career": [
+        "A small opportunity is hiding in an ordinary conversation today.",
+        "Collaboration flows well, but don't absorb tasks that aren't yours.",
+        "Reread emails and contracts carefully — small errors are magnified.",
+        "Time to surface a proposal you've been preparing. The window is open.",
+        "Async beats face-to-face today. Let the information speak.",
+        "Your boss will respond to numbers, not narrative. Lead with data.",
+        "Avoid multitasking. Pick one thing and move it significantly.",
+        "If you're torn on a decision, defer it by one day for a safer call."
+      ],
+      "love": [
+        "Small frictions come from mismatched pace. Speak a little slower.",
+        "Singles: chemistry is close to home, not in a new crowd.",
+        "A conversation you've been postponing is ready. Direct but gentle.",
+        "Don't rush to define the relationship. Let them speak first.",
+        "A simple 'thinking of you' beats a grand gesture today.",
+        "Pick a quiet setting for a date. Listening matters more than buzz.",
+        "An ex may surface. Ask yourself what you actually want before replying.",
+        "Tend to your own emotions first — you need yourself more than a partner today."
+      ],
+      "health": [
+        "Neck or shoulder tension points to posture. Stand up every hour.",
+        "Sleep quality matters more than hours. No screens for the last 30 minutes.",
+        "Mild gut sensitivity today — eat lighter, skip ice and chili.",
+        "A 20-minute brisk walk will noticeably lift your afternoon.",
+        "Warm water over caffeine today. Your mood will thank you.",
+        "Eyes need rest. Every 45 minutes of work, look at the horizon for 1.",
+        "Emotional volatility is higher; five slow breaths before any reaction.",
+        "Gentle movement beats intense exercise today — yoga or stretching."
+      ],
+      "wealth": [
+        "Income is steady, but hold off committing cash to a new venture.",
+        "Impulse spending is likely — park items in a cart for an hour first.",
+        "Good day to audit subscriptions and dormant bills for hidden leaks.",
+        "Delay investment decisions by 24 hours. Let the emotion settle.",
+        "Primary income channels outperform speculative ones today.",
+        "Unexpected expense risk is up. Keep a buffer on hand.",
+        "Renegotiate existing deals — do not launch new negotiations.",
+        "A small gift you give today returns in an unexpected form later."
+      ],
+      "lucky_color": ["Crimson", "Indigo", "Gold", "Forest Green", "Snow White", "Blush Pink", "Black", "Olive", "Silver", "Royal Blue"],
+      "lucky_number": ["3", "5", "7", "8", "9", "12", "18", "21", "27", "36"]
+    },
+    "ja": {
+      "overall": [
+        "今日は全体的に穏やか。既存の計画に沿って進めるのが吉。",
+        "エネルギー充溢。大事な一歩に主導権を取りましょう。",
+        "動より静。思考を深めれば方向性が見えてきます。",
+        "助けてくれる人が周囲に。頼ることをためらわないで。",
+        "小さな波はあっても軽微。辛抱が解決します。",
+        "新規ではなく仕上げに向く日。途中のものを完了させましょう。",
+        "感情が揺れる日。まず自分を整えてから他人へ。",
+        "直感が冴えています。第一印象が正解。",
+        "控えめに過ごし、強引な人との正面衝突は避けて。",
+        "テンポ速め。短く的確なやり取りが効果的。"
+      ],
+      "career": [
+        "日常会話の中に小さなチャンスが潜んでいます。",
+        "協力は順調。ただし自分の仕事ではないものを抱え込まないで。",
+        "メールや契約書の細部を再確認。今日は小さなミスが大きくなります。",
+        "温めてきた提案を出す好機。窓は開いています。",
+        "対面より非同期。情報に語らせましょう。",
+        "上司は数字に反応する日。データで報告を。",
+        "マルチタスクは避けて。一点突破が賢明。",
+        "決断に迷うなら一日延ばす方が安全です。"
+      ],
+      "love": [
+        "パートナーとの小さな摩擦はテンポの違い。少し丁寧に話して。",
+        "シングル：縁は身近な範囲から。身の回りを見直しましょう。",
+        "先送りしていた会話を始める日。率直かつ優しく。",
+        "関係を急いで定義しないで。相手に話す余白を。",
+        "「気にかけているよ」の一言が大仰な告白より響きます。",
+        "デートは静かな場所で。傾聴が賑やかさに勝ります。",
+        "旧縁が浮上するかも。返信の前に本心を確認して。",
+        "恋愛より先に自分の感情を整えて。今日はまず自分を理解すること。"
+      ],
+      "health": [
+        "肩首の張りは姿勢のサイン。1 時間ごとに立ち上がって。",
+        "睡眠は時間より質。寝る 30 分前は画面オフ。",
+        "消化が敏感な日。食事は軽めに、冷たいもの・辛いものは控えめに。",
+        "20 分の早歩きで午後の活力が上がります。",
+        "カフェインより白湯を。気分が整います。",
+        "目の休息を。45 分ごとに 1 分、遠くを眺めて。",
+        "感情が揺れやすい日。反応前にゆっくり 5 呼吸。",
+        "穏やかな運動が吉。ヨガやストレッチが最適です。"
+      ],
+      "wealth": [
+        "収入は安定。新規事業への現金投入は控えめに。",
+        "衝動買い注意。カートに入れて 1 時間様子を見て。",
+        "放置していた請求・サブスクの整理に適した日。",
+        "投資判断は 24 時間延ばして感情を落ち着かせて。",
+        "正財運 > 偏財運。本業に集中する方がリターン大。",
+        "予期せぬ出費のリスク。予備を確保して。",
+        "既存契約の再交渉に向く日。新規交渉は避けて。",
+        "今日贈る小さな贈り物が、後日思わぬ形で戻ってきます。"
+      ],
+      "lucky_color": ["朱紅", "藍", "黄金", "深緑", "純白", "桜色", "黒", "オリーブ", "銀", "紺青"],
+      "lucky_number": ["3", "5", "7", "8", "9", "12", "18", "21", "27", "36"]
+    },
+    "ko": {
+      "overall": [
+        "오늘은 전반적으로 안정적. 기존 계획대로 차분히 진행하세요.",
+        "에너지가 충만한 날. 중요한 일에 주도권을 잡으세요.",
+        "행동보다 사고. 방향이 먼저 보입니다.",
+        "주변에 도움을 줄 사람이 있습니다. 망설이지 말고 요청하세요.",
+        "작은 장애가 있어도 경미합니다. 인내가 해소합니다.",
+        "새로 시작보다 마무리에 좋은 날. 남은 일을 끝내세요.",
+        "감정 기복이 있는 날. 자신을 먼저 다독이고 타인을 대하세요.",
+        "직감이 예리합니다. 첫 느낌이 대개 맞습니다.",
+        "오늘은 낮게. 강한 성격과의 정면 충돌은 피하세요.",
+        "템포가 빠릅니다. 짧고 명확한 소통이 효과적입니다."
+      ],
+      "career": [
+        "평범한 대화 속에 작은 기회가 숨어 있습니다.",
+        "협업은 순조롭지만, 남의 업무까지 떠안지 마세요.",
+        "이메일과 계약서 세부를 재확인하세요. 오늘은 작은 실수가 커집니다.",
+        "준비해온 제안을 꺼낼 타이밍입니다.",
+        "대면보다 비동기 소통이 유리합니다.",
+        "상사는 숫자에 반응하는 날. 데이터로 보고하세요.",
+        "멀티태스킹을 피하고 한 가지에 집중하세요.",
+        "결정을 망설이는 중이라면 하루 미루는 편이 안전합니다."
+      ],
+      "love": [
+        "파트너와의 작은 마찰은 속도 차이 때문. 조금 천천히 말하세요.",
+        "싱글: 인연은 멀리가 아닌 가까운 곳에 있습니다.",
+        "미뤄둔 대화를 시작하기 좋은 날. 솔직하되 부드럽게.",
+        "관계 정의를 서두르지 말고 상대의 말에 공간을 주세요.",
+        "‘생각나’ 한 마디가 거창한 고백보다 와닿습니다.",
+        "조용한 데이트가 적합합니다. 경청이 핵심.",
+        "옛 인연이 나타날 수 있습니다. 답하기 전에 진심을 물으세요.",
+        "관계보다 먼저 자기 감정을 돌보세요. 오늘은 스스로가 더 필요합니다."
+      ],
+      "health": [
+        "목과 어깨 긴장은 자세 신호. 한 시간마다 일어나세요.",
+        "수면은 시간보다 질. 취침 30분 전부터 화면 차단.",
+        "위장이 예민한 날. 가볍게 먹고 찬 것·매운 것은 줄이세요.",
+        "20분 빠른 걷기가 오후 활력을 크게 높입니다.",
+        "카페인보다 따뜻한 물을. 기분이 안정됩니다.",
+        "눈을 쉬게 하세요. 45분마다 1분 먼 곳을 보기.",
+        "감정 변동이 큰 날. 반응 전에 다섯 번 천천히 호흡하세요.",
+        "격렬한 운동보다 요가·스트레칭이 좋습니다."
+      ],
+      "wealth": [
+        "수입은 안정적이지만 신규 투자에 현금을 급히 넣지 마세요.",
+        "충동구매 주의. 장바구니에 한 시간 담아두고 살펴보세요.",
+        "미뤄둔 청구·구독을 정리하기 좋은 날입니다.",
+        "투자 결정을 24시간 미뤄 감정을 가라앉히세요.",
+        "정재운 > 편재운. 본업에 집중하는 편이 유리합니다.",
+        "예기치 않은 지출 위험이 있어 비상금을 확보하세요.",
+        "기존 계약 재협상에 유리하며 신규 협상은 피하세요.",
+        "오늘 건넨 작은 선물이 훗날 뜻밖의 형태로 돌아옵니다."
+      ],
+      "lucky_color": ["진홍", "남색", "황금", "짙은 녹색", "순백", "연분홍", "검정", "올리브", "은색", "감청"],
+      "lucky_number": ["3", "5", "7", "8", "9", "12", "18", "21", "27", "36"]
+    },
+    "es": {
+      "overall": [
+        "Día estable en general — siga su plan existente en lugar de improvisar.",
+        "Su energía está alta hoy. Tome la iniciativa en algo que importe.",
+        "Piense más, muévase menos. La claridad llegará antes que la acción.",
+        "Hay personas dispuestas a ayudar hoy. No dude en pedir apoyo.",
+        "Pueden surgir pequeños tropiezos; la paciencia los disuelve.",
+        "Mejor día para cerrar asuntos que para abrir nuevos. Termine lo pendiente.",
+        "Cambios de humor hoy. Céntrese antes de responder a otros.",
+        "Su intuición es aguda. La primera impresión suele ser correcta.",
+        "Mantenga un perfil bajo; evite conflictos frontales con personalidades dominantes.",
+        "Ritmo rápido — mensajes breves y directos funcionan mejor."
+      ],
+      "career": [
+        "Una pequeña oportunidad se esconde en una conversación ordinaria hoy.",
+        "La colaboración fluye bien, pero no absorba tareas que no son suyas.",
+        "Relea correos y contratos con atención — los pequeños errores se magnifican.",
+        "Momento para sacar una propuesta que ha preparado. La ventana está abierta.",
+        "Lo asíncrono gana al cara a cara hoy. Deje que la información hable.",
+        "Su jefe responderá a números, no a narrativa. Lidere con datos.",
+        "Evite multitarea. Elija una cosa y avance con fuerza.",
+        "Si duda en una decisión, aplácela un día para una elección más segura."
+      ],
+      "love": [
+        "Las pequeñas fricciones vienen de ritmos distintos. Hable un poco más despacio.",
+        "Solteros: la química está cerca, no en una multitud nueva.",
+        "Una conversación pospuesta está lista. Directa pero suave.",
+        "No se apresure a definir la relación. Deje que el otro hable primero.",
+        "Un simple ‘pensando en ti’ supera a un gran gesto hoy.",
+        "Elija un entorno tranquilo para una cita. Escuchar importa más que el bullicio.",
+        "Un ex puede aparecer. Pregúntese qué quiere realmente antes de responder.",
+        "Atienda sus propias emociones primero — hoy se necesita a sí mismo más que a una pareja."
+      ],
+      "health": [
+        "La tensión en cuello o hombros indica postura. Póngase de pie cada hora.",
+        "Calidad del sueño > horas. Sin pantallas los últimos 30 minutos.",
+        "Sensibilidad digestiva leve hoy — coma ligero, evite hielo y picante.",
+        "Una caminata rápida de 20 minutos elevará notablemente la tarde.",
+        "Agua tibia sobre cafeína hoy. Su ánimo lo agradecerá.",
+        "Los ojos necesitan descanso. Cada 45 minutos, mire al horizonte un minuto.",
+        "Mayor volatilidad emocional; cinco respiraciones lentas antes de reaccionar.",
+        "Movimiento suave hoy — yoga o estiramientos superan el ejercicio intenso."
+      ],
+      "wealth": [
+        "El ingreso es estable, pero no comprometa efectivo en una nueva empresa.",
+        "Gasto impulsivo probable — aparque artículos en el carrito una hora primero.",
+        "Buen día para auditar suscripciones y facturas durmientes en busca de fugas.",
+        "Aplace decisiones de inversión 24 horas. Deje que la emoción se asiente.",
+        "Los ingresos principales superan a los especulativos hoy.",
+        "Riesgo de gasto inesperado; mantenga una reserva a mano.",
+        "Renegocie acuerdos existentes — no lance nuevas negociaciones.",
+        "Un pequeño regalo que dé hoy regresa de forma inesperada más tarde."
+      ],
+      "lucky_color": ["Carmesí", "Índigo", "Oro", "Verde bosque", "Blanco nieve", "Rosa pálido", "Negro", "Oliva", "Plata", "Azul real"],
+      "lucky_number": ["3", "5", "7", "8", "9", "12", "18", "21", "27", "36"]
+    },
+    "fr": {
+      "overall": [
+        "Journée stable dans l'ensemble — suivez votre plan plutôt que d'improviser.",
+        "Votre énergie est haute aujourd'hui. Prenez l'initiative sur ce qui compte.",
+        "Pensez plus, bougez moins. La clarté viendra avant l'action.",
+        "Des personnes prêtes à aider aujourd'hui. N'hésitez pas à demander.",
+        "De petits obstacles possibles mais mineurs ; la patience les dissout.",
+        "Mieux pour clôturer que pour ouvrir. Terminez ce qui est à moitié fait.",
+        "Humeur changeante aujourd'hui. Apaisez-vous avant de répondre aux autres.",
+        "Votre intuition est fine. Le premier instinct est souvent juste.",
+        "Restez discret ; évitez les conflits frontaux avec les personnalités dominantes.",
+        "Rythme soutenu — des messages courts et ciblés valent mieux que les longs."
+      ],
+      "career": [
+        "Une petite opportunité se cache dans une conversation ordinaire aujourd'hui.",
+        "La collaboration coule bien, mais n'absorbez pas des tâches qui ne sont pas les vôtres.",
+        "Relisez e-mails et contrats — les petites erreurs sont amplifiées.",
+        "Moment pour sortir une proposition préparée. La fenêtre est ouverte.",
+        "L'asynchrone l'emporte sur le face-à-face aujourd'hui.",
+        "Votre chef réagira aux chiffres, pas au récit. Commencez par les données.",
+        "Évitez le multitâche. Choisissez une chose et faites-la avancer vraiment.",
+        "Si vous hésitez, repoussez d'un jour pour un choix plus sûr."
+      ],
+      "love": [
+        "Les petites frictions viennent de rythmes différents. Parlez un peu plus lentement.",
+        "Célibataires : la chimie est proche, pas dans une nouvelle foule.",
+        "Une conversation reportée est prête. Direct mais doux.",
+        "Ne définissez pas la relation dans la précipitation. Laissez l'autre parler.",
+        "Un simple « je pense à toi » vaut mieux qu'un grand geste aujourd'hui.",
+        "Choisissez un lieu calme pour un rendez-vous. L'écoute compte plus que l'animation.",
+        "Un ex peut réapparaître. Demandez-vous ce que vous voulez vraiment avant de répondre.",
+        "Occupez-vous d'abord de vos émotions — aujourd'hui vous avez plus besoin de vous que d'un partenaire."
+      ],
+      "health": [
+        "Les tensions au cou ou aux épaules indiquent la posture. Levez-vous chaque heure.",
+        "La qualité du sommeil > les heures. Pas d'écrans les 30 dernières minutes.",
+        "Sensibilité digestive légère aujourd'hui — mangez léger, évitez glace et piment.",
+        "Une marche rapide de 20 minutes améliorera nettement votre après-midi.",
+        "De l'eau tiède plutôt que la caféine. Votre humeur en bénéficiera.",
+        "Les yeux ont besoin de repos. Toutes les 45 minutes, regardez l'horizon une minute.",
+        "Volatilité émotionnelle élevée ; cinq respirations lentes avant de réagir.",
+        "Mouvements doux plutôt qu'exercice intense — yoga ou étirements."
+      ],
+      "wealth": [
+        "Les revenus sont stables, mais ne placez pas de liquidités dans une nouvelle aventure.",
+        "Achat impulsif probable — laissez les articles au panier une heure d'abord.",
+        "Bon jour pour auditer abonnements et factures dormantes.",
+        "Reportez les décisions d'investissement de 24 heures. Laissez l'émotion retomber.",
+        "Les revenus principaux surpassent les spéculatifs aujourd'hui.",
+        "Risque de dépense imprévue ; gardez une réserve.",
+        "Renégociez les accords existants — ne lancez pas de nouvelles négociations.",
+        "Un petit cadeau donné aujourd'hui revient sous une forme inattendue plus tard."
+      ],
+      "lucky_color": ["Cramoisi", "Indigo", "Or", "Vert forêt", "Blanc neige", "Rose pâle", "Noir", "Olive", "Argent", "Bleu royal"],
+      "lucky_number": ["3", "5", "7", "8", "9", "12", "18", "21", "27", "36"]
+    }
+  }
+}

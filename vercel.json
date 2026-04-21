@@ -1,6 +1,14 @@
 {
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/sign/:lang/:n.html", "destination": "/api/sign?lang=:lang&n=:n" }
+    { "source": "/sign/:lang/:n.html", "destination": "/api/sign?lang=:lang&n=:n" },
+    { "source": "/yijing/:lang/:id.html", "destination": "/api/yijing?lang=:lang&id=:id" },
+    { "source": "/zodiac/:lang/:type/:slug.html", "destination": "/api/zodiac?lang=:lang&type=:type&slug=:slug" },
+    { "source": "/tarot/:lang/:slug.html", "destination": "/api/tarot?lang=:lang&slug=:slug" },
+    { "source": "/yijing.html", "destination": "/api/landing?page=yijing" },
+    { "source": "/zodiac.html", "destination": "/api/landing?page=zodiac" },
+    { "source": "/bazi.html", "destination": "/api/landing?page=bazi" },
+    { "source": "/tarot.html", "destination": "/api/landing?page=tarot" },
+    { "source": "/huangli.html", "destination": "/api/landing?page=huangli" }
   ]
 }

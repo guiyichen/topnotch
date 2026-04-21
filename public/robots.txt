@@ -1,13 +1,30 @@
 User-agent: *
 Allow: /
 Allow: /sign/
+Allow: /yijing/
+Allow: /zodiac/
+Allow: /tarot/
 Allow: /daily/
 Allow: /blog/
+Allow: /bazi.html
+Allow: /yijing.html
+Allow: /zodiac.html
+Allow: /tarot.html
+Allow: /huangli.html
 Allow: /api/og
 
-# Payment / interpretation endpoints are POST-only — no crawl value.
+# POST-only or private endpoints — no crawl value, save crawl budget.
 Disallow: /api/create-checkout
 Disallow: /api/verify-session
 Disallow: /api/get-interpretation
+Disallow: /api/ai-reading
+Disallow: /api/bazi
+Disallow: /api/huangli
 
+# The authoritative sitemap — crawlers should discover all 1,600+
+# locale-resolved URLs from this file.
 Sitemap: https://oracleday.xyz/sitemap.xml
+
+# Polite rate limiting for aggressive crawlers (not honored by Googlebot
+# but respected by Bing, Yandex, and many others).
+Crawl-delay: 1

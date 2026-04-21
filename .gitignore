@@ -12,3 +12,7 @@ public/blog/
 
 # Sign data bundle consumed by api/sign.tsx at deploy time.
 lib/sign-data.json
+
+# Local Claude Code settings — not committed
+.claude/
+

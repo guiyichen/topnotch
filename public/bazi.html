@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BaZi (Four Pillars) Calculator · AI Destiny Reading | 八字命盘</title>
+<meta name="description" content="Free BaZi / Four Pillars calculator. Enter your birth date and time to see your four pillars, ten gods, and five-element balance. Optional AI deep reading.">
+<link rel="canonical" href="https://oracleday.xyz/bazi.html">
+<link rel="alternate" hreflang="en" href="https://oracleday.xyz/bazi.html">
+<link rel="alternate" hreflang="zh" href="https://oracleday.xyz/bazi.html?lang=zh">
+<link rel="alternate" hreflang="ja" href="https://oracleday.xyz/bazi.html?lang=ja">
+<link rel="alternate" hreflang="ko" href="https://oracleday.xyz/bazi.html?lang=ko">
+<link rel="alternate" hreflang="es" href="https://oracleday.xyz/bazi.html?lang=es">
+<link rel="alternate" hreflang="fr" href="https://oracleday.xyz/bazi.html?lang=fr">
+<link rel="alternate" hreflang="x-default" href="https://oracleday.xyz/bazi.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="BaZi (Four Pillars) Calculator | 八字命盘">
+<meta property="og:description" content="Free Four Pillars chart + optional AI deep reading.">
+<meta property="og:url" content="https://oracleday.xyz/bazi.html">
+<meta property="og:image" content="https://oracleday.xyz/qtong.png">
+<link rel="stylesheet" href="style.css?v=6">
+</head>
+<body class="bazi-page">
+
+<select id="lang-select" class="lang-select" onchange="window.location.search='?lang='+this.value" aria-label="Select language">
+  <option value="en">English</option>
+  <option value="zh">中文</option>
+</select>
+
+<main class="bazi-main">
+  <header class="bazi-intro">
+    <h1 id="page-title">BaZi (Four Pillars) Calculator</h1>
+    <p id="page-intro">Enter your Solar (Gregorian) birth date and time. We compute your four pillars, ten gods, and five-element distribution. All computation happens on demand — nothing is stored.</p>
+  </header>
+
+  <form id="bazi-form" class="bazi-form" autocomplete="off">
+    <div class="bazi-form-row">
+      <label><span id="lbl-birth">Birth date</span>
+        <input type="date" name="date" required />
+      </label>
+      <label><span id="lbl-time">Birth time</span>
+        <input type="time" name="time" value="12:00" required />
+      </label>
+    </div>
+    <div class="bazi-form-row">
+      <label class="radio-group">
+        <span id="lbl-gender">Gender</span>
+        <label><input type="radio" name="gender" value="male" checked><span id="lbl-male">Male</span></label>
+        <label><input type="radio" name="gender" value="female"><span id="lbl-female">Female</span></label>
+      </label>
+    </div>
+    <button type="submit" class="unlock-btn bazi-submit"><span id="btn-submit">Compute chart</span></button>
+    <p class="bazi-privacy" id="bazi-privacy">Birth data is not stored on our server. If you later unlock an AI reading, only the chart (not your raw birth date) is sent to the AI provider.</p>
+  </form>
+
+  <section id="bazi-result" class="bazi-result" hidden>
+    <!-- filled by bazi.js -->
+  </section>
+</main>
+
+<script src="i18n-pages.js?v=1"></script>
+<script src="site-nav.js?v=2"></script>
+<script src="bazi.js?v=2"></script>
+</body>
+</html>

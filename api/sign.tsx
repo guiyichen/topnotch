@@ -173,6 +173,15 @@ function signUrl(lang: string, n: number): string {
 
 const LANGS = ['zh', 'en', 'ja', 'ko', 'es', 'fr'];
 
+// Regional hreflang variants — see lib/hreflang-regions.js.
+const HREFLANG_VARIANTS: Record<string, string[]> = {
+    en: ['en-US', 'en-GB', 'en-CA', 'en-AU'],
+    zh: ['zh-CN', 'zh-SG', 'zh-TW', 'zh-HK'],
+    ja: ['ja-JP'], ko: ['ko-KR'],
+    es: ['es-ES', 'es-MX', 'es-AR', 'es-419'],
+    fr: ['fr-FR', 'fr-CA', 'fr-BE', 'fr-CH'],
+};
+
 // ---------- HTML fragments ----------
 function analyticsHead(): string {
     return `
@@ -195,9 +204,16 @@ function analyticsHead(): string {
 }
 
 function hreflangTags(n: number): string {
-    const tags = LANGS.map((l) =>
-        `    <link rel="alternate" hreflang="${l}" href="${signUrl(l, n)}">`
-    );
+    // Base language + all regional variants pointing at the same URL, per
+    // Google's guidance for identical-content multi-locale pages.
+    const tags: string[] = [];
+    for (const l of LANGS) {
+        const href = signUrl(l, n);
+        tags.push(`    <link rel="alternate" hreflang="${l}" href="${href}">`);
+        for (const region of (HREFLANG_VARIANTS[l] || [])) {
+            tags.push(`    <link rel="alternate" hreflang="${region}" href="${href}">`);
+        }
+    }
     tags.push(`    <link rel="alternate" hreflang="x-default" href="${signUrl('en', n)}">`);
     return tags.join('\n');
 }
@@ -641,6 +657,8 @@ ${analyticsHead()}
             });
         })();
     </script>
+    <script src="/i18n-pages.js?v=1"></script>
+    <script src="/site-nav.js?v=2"></script>
 </body>
 </html>`;
 }

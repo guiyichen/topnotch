@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chinese Almanac · Auspicious Date Finder | 黄历择日</title>
+<meta name="description" content="Free Chinese almanac (huangli) — see what is favorable (宜) and unfavorable (忌) on any date. Optional AI picker for marriage, moving, opening a business.">
+<link rel="canonical" href="https://oracleday.xyz/huangli.html">
+<link rel="alternate" hreflang="en" href="https://oracleday.xyz/huangli.html">
+<link rel="alternate" hreflang="zh" href="https://oracleday.xyz/huangli.html?lang=zh">
+<link rel="alternate" hreflang="ja" href="https://oracleday.xyz/huangli.html?lang=ja">
+<link rel="alternate" hreflang="ko" href="https://oracleday.xyz/huangli.html?lang=ko">
+<link rel="alternate" hreflang="es" href="https://oracleday.xyz/huangli.html?lang=es">
+<link rel="alternate" hreflang="fr" href="https://oracleday.xyz/huangli.html?lang=fr">
+<link rel="alternate" hreflang="x-default" href="https://oracleday.xyz/huangli.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Chinese Almanac · Auspicious Date Finder">
+<meta property="og:description" content="Free huangli lookup + AI date picker for weddings, moving, opening a business.">
+<meta property="og:url" content="https://oracleday.xyz/huangli.html">
+<meta property="og:image" content="https://oracleday.xyz/qtong.png">
+<link rel="stylesheet" href="style.css?v=6">
+</head>
+<body class="huangli-page">
+
+<select id="lang-select" class="lang-select" onchange="window.location.search='?lang='+this.value" aria-label="Select language">
+  <option value="en">English</option>
+  <option value="zh">中文</option>
+</select>
+
+<main class="huangli-main">
+  <header class="huangli-intro">
+    <h1 id="page-title">Chinese Almanac · Huang Li</h1>
+    <p id="page-intro">See the lunar-date attributes, what is favorable and what to avoid on any date.</p>
+  </header>
+
+  <form id="huangli-form" class="huangli-form">
+    <label><span id="lbl-date">Date</span>
+      <input type="date" name="date" required />
+    </label>
+    <button type="submit" class="unlock-btn"><span id="btn-lookup">Look up</span></button>
+  </form>
+
+  <section id="huangli-result" class="huangli-result" hidden></section>
+
+  <section class="hex-section hex-upgrade" id="picker-section">
+    <h2 id="picker-heading">AI Auspicious Date Picker</h2>
+    <p id="picker-desc">Tell us what you're planning — marriage, moving house, opening a business — and a date range. Our AI checks the almanac for each day and recommends the three most favorable.</p>
+    <form id="picker-form">
+      <label><span id="lbl-event">Event type</span>
+        <select name="event">
+          <option value="wedding">Wedding (嫁娶)</option>
+          <option value="moving">Moving (入宅)</option>
+          <option value="business">Open business (开市)</option>
+          <option value="travel">Travel (出行)</option>
+          <option value="signing">Signing contract (立券)</option>
+          <option value="renovation">Renovation (动土)</option>
+        </select>
+      </label>
+      <div class="huangli-range">
+        <label><span id="lbl-start">Start</span>
+          <input type="date" name="start" required />
+        </label>
+        <label><span id="lbl-end">End</span>
+          <input type="date" name="end" required />
+        </label>
+      </div>
+      <button type="submit" class="unlock-btn"><span id="btn-picker">🔓 Unlock AI Date Picker $1.99</span></button>
+      <div id="picker-output" aria-live="polite"></div>
+    </form>
+  </section>
+</main>
+
+<script src="i18n-pages.js?v=1"></script>
+<script src="site-nav.js?v=2"></script>
+<script src="huangli.js?v=2"></script>
+</body>
+</html>

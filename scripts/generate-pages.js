@@ -988,6 +988,110 @@ function buildSitemap() {
         }
     }
 
+    // Yijing (I Ching) — now fully translated to all 6 languages.
+    const ALL_LANGS = ['zh', 'en', 'ja', 'ko', 'es', 'fr'];
+    const YIJING_CONTENT_LANGS = ALL_LANGS;
+    const YIJING_COUNT = 64;
+    const yijingUrl = (lang, id) => `${SITE_URL}/yijing/${lang}/${id}.html`;
+    for (const l of YIJING_CONTENT_LANGS) {
+        for (let id = 1; id <= YIJING_COUNT; id++) {
+            urls.push({
+                loc: yijingUrl(l, id),
+                alts: YIJING_CONTENT_LANGS.map((ll) => ({ lang: ll, href: yijingUrl(ll, id) })),
+                lastmod: BUILD_DATE,
+                changefreq: 'monthly',
+                priority: '0.6',
+            });
+        }
+    }
+    // Yijing landing (coin-toss page) — all 6 langs.
+    urls.push({
+        loc: `${SITE_URL}/yijing.html`,
+        alts: ALL_LANGS.map((l) => ({ lang: l, href: l === 'en' ? `${SITE_URL}/yijing.html` : `${SITE_URL}/yijing.html?lang=${l}` })),
+        lastmod: BUILD_DATE,
+        changefreq: 'weekly',
+        priority: '0.7',
+    });
+
+    // Zodiac — fully translated content in 6 langs, emit 6-lang URLs.
+    const ZODIAC_LANGS = ALL_LANGS;
+    const ZODIAC = {
+        western: ['aries','taurus','gemini','cancer','leo','virgo','libra','scorpio','sagittarius','capricorn','aquarius','pisces'],
+        chinese: ['rat','ox','tiger','rabbit','dragon','snake','horse','goat','monkey','rooster','dog','pig'],
+    };
+    const zodiacUrl = (lang, type, slug) => `${SITE_URL}/zodiac/${lang}/${type}/${slug}.html`;
+    let zodiacUrlsInSitemap = 1; // landing
+    urls.push({
+        loc: `${SITE_URL}/zodiac.html`,
+        alts: ZODIAC_LANGS.map((l) => ({ lang: l, href: l === 'en' ? `${SITE_URL}/zodiac.html` : `${SITE_URL}/zodiac.html?lang=${l}` })),
+        lastmod: BUILD_DATE,
+        changefreq: 'weekly',
+        priority: '0.7',
+    });
+    for (const type of Object.keys(ZODIAC)) {
+        for (const slug of ZODIAC[type]) {
+            for (const l of ZODIAC_LANGS) {
+                urls.push({
+                    loc: zodiacUrl(l, type, slug),
+                    alts: ZODIAC_LANGS.map((ll) => ({ lang: ll, href: zodiacUrl(ll, type, slug) })),
+                    lastmod: BUILD_DATE,
+                    changefreq: 'daily',
+                    priority: '0.7',
+                });
+                zodiacUrlsInSitemap++;
+            }
+        }
+    }
+    // Stash for the summary log line at the end of main().
+    global.__zodiacUrls = zodiacUrlsInSitemap;
+
+    // BaZi landing (interactive calculator, not per-chart SEO). UI is
+    // localized in 6 langs via i18n-pages.js.
+    urls.push({
+        loc: `${SITE_URL}/bazi.html`,
+        alts: ALL_LANGS.map((l) => ({ lang: l, href: l === 'en' ? `${SITE_URL}/bazi.html` : `${SITE_URL}/bazi.html?lang=${l}` })),
+        lastmod: BUILD_DATE,
+        changefreq: 'monthly',
+        priority: '0.7',
+    });
+    global.__baziUrls = 1;
+
+    // Tarot — per-card pages now fully translated to all 6 languages.
+    const TAROT_CONTENT_LANGS = ALL_LANGS;
+    const TAROT_SLUGS = [
+        'the-fool','the-magician','the-high-priestess','the-empress','the-emperor','the-hierophant','the-lovers','the-chariot','strength','the-hermit','wheel-of-fortune','justice','the-hanged-man','death','temperance','the-devil','the-tower','the-star','the-moon','the-sun','judgement','the-world',
+        'ace-of-wands','two-of-wands','three-of-wands','four-of-wands','five-of-wands','six-of-wands','seven-of-wands','eight-of-wands','nine-of-wands','ten-of-wands','page-of-wands','knight-of-wands','queen-of-wands','king-of-wands',
+        'ace-of-cups','two-of-cups','three-of-cups','four-of-cups','five-of-cups','six-of-cups','seven-of-cups','eight-of-cups','nine-of-cups','ten-of-cups','page-of-cups','knight-of-cups','queen-of-cups','king-of-cups',
+        'ace-of-swords','two-of-swords','three-of-swords','four-of-swords','five-of-swords','six-of-swords','seven-of-swords','eight-of-swords','nine-of-swords','ten-of-swords','page-of-swords','knight-of-swords','queen-of-swords','king-of-swords',
+        'ace-of-pentacles','two-of-pentacles','three-of-pentacles','four-of-pentacles','five-of-pentacles','six-of-pentacles','seven-of-pentacles','eight-of-pentacles','nine-of-pentacles','ten-of-pentacles','page-of-pentacles','knight-of-pentacles','queen-of-pentacles','king-of-pentacles',
+    ];
+    let tarotUrlsInSitemap = 1; // landing
+    urls.push({
+        loc: `${SITE_URL}/tarot.html`,
+        alts: ALL_LANGS.map((l) => ({ lang: l, href: l === 'en' ? `${SITE_URL}/tarot.html` : `${SITE_URL}/tarot.html?lang=${l}` })),
+        lastmod: BUILD_DATE, changefreq: 'weekly', priority: '0.7',
+    });
+    for (const slug of TAROT_SLUGS) {
+        for (const l of TAROT_CONTENT_LANGS) {
+            urls.push({
+                loc: `${SITE_URL}/tarot/${l}/${slug}.html`,
+                alts: TAROT_CONTENT_LANGS.map((ll) => ({ lang: ll, href: `${SITE_URL}/tarot/${ll}/${slug}.html` })),
+                lastmod: BUILD_DATE, changefreq: 'monthly', priority: '0.6',
+            });
+            tarotUrlsInSitemap++;
+        }
+    }
+    global.__tarotUrls = tarotUrlsInSitemap;
+
+    // Huangli landing only. UI is localized in 6 langs; per-day pages
+    // would be 365+ URLs per lang and are deferred.
+    urls.push({
+        loc: `${SITE_URL}/huangli.html`,
+        alts: ALL_LANGS.map((l) => ({ lang: l, href: l === 'en' ? `${SITE_URL}/huangli.html` : `${SITE_URL}/huangli.html?lang=${l}` })),
+        lastmod: BUILD_DATE, changefreq: 'daily', priority: '0.7',
+    });
+    global.__huangliUrls = 1;
+
     // Blog index + posts
     for (const lang of Object.keys(blogPosts)) {
         const indexHref = `${SITE_URL}/blog/${lang}/`;
@@ -1012,11 +1116,21 @@ function buildSitemap() {
         }
     }
 
+    // Regional hreflang variants — expand each base language into its
+    // region codes so Google can serve locale-matched users. See
+    // lib/hreflang-regions.js for the canonical map.
+    const { REGIONAL_VARIANTS } = require('../lib/hreflang-regions');
+
     const entries = urls
         .map((u) => {
-            const alts = u.alts
-                .map((a) => `    <xhtml:link rel="alternate" hreflang="${a.lang}" href="${a.href}"/>`)
-                .join('\n');
+            const altLines = [];
+            for (const a of u.alts) {
+                altLines.push(`    <xhtml:link rel="alternate" hreflang="${a.lang}" href="${a.href}"/>`);
+                for (const region of (REGIONAL_VARIANTS[a.lang] || [])) {
+                    altLines.push(`    <xhtml:link rel="alternate" hreflang="${region}" href="${a.href}"/>`);
+                }
+            }
+            const alts = altLines.join('\n');
             // Only emit x-default when multiple locales exist — single-locale
             // entries (e.g. blog posts that only have one translation) would
             // otherwise crash on .find().
@@ -1371,10 +1485,20 @@ function main() {
     writeFile(SITEMAP_PATH, sitemap);
 
     const signUrlsInSitemap = LANGS.length * SIGN_COUNT;
+    const yijingUrlsInSitemap = 6 * 64 + 1; // 6 langs × 64 hexagrams + landing
+    const zodiacUrlsInSitemap = global.__zodiacUrls || 0;
+    const baziUrlsInSitemap = global.__baziUrls || 0;
+    const tarotUrlsInSitemap = global.__tarotUrls || 0;
+    const huangliUrlsInSitemap = global.__huangliUrls || 0;
     console.log(`✔ Sign pages: served dynamically via api/sign.tsx (${signUrlsInSitemap} URLs in sitemap).`);
+    console.log(`✔ Yijing pages: served dynamically via api/yijing.tsx (${yijingUrlsInSitemap} URLs in sitemap).`);
+    console.log(`✔ Zodiac pages: served dynamically via api/zodiac.tsx (${zodiacUrlsInSitemap} URLs in sitemap).`);
+    console.log(`✔ BaZi landing: served from /bazi.html (${baziUrlsInSitemap} URL in sitemap).`);
+    console.log(`✔ Tarot pages: served dynamically via api/tarot.tsx (${tarotUrlsInSitemap} URLs in sitemap).`);
+    console.log(`✔ Huangli landing: served from /huangli.html (${huangliUrlsInSitemap} URL in sitemap).`);
     console.log(`✔ Wrote ${LANGS.length} daily oracle pages.`);
     console.log(`✔ Wrote ${blogPagesWritten} blog posts + ${Object.keys(blogPosts).length} blog indexes.`);
-    console.log(`✔ Wrote sitemap.xml with ${1 + LANGS.length + signUrlsInSitemap + blogPagesWritten + Object.keys(blogPosts).length} URLs.`);
+    console.log(`✔ Wrote sitemap.xml with ${1 + LANGS.length + signUrlsInSitemap + yijingUrlsInSitemap + zodiacUrlsInSitemap + baziUrlsInSitemap + tarotUrlsInSitemap + huangliUrlsInSitemap + blogPagesWritten + Object.keys(blogPosts).length} URLs.`);
 }
 
 try {
